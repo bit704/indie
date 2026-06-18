@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>独立游戏 — China Empire</title>
+	<meta name="description" content="独立游戏站点 — 包含 China Empire 游戏入口，点击即可开始游玩。">
+	<style>
+		:root{
+			--bg:#000000; --card:#0b0b0b; --accent:#ffd400; --muted:#cfcfcf; --glass:rgba(255,212,0,0.04);
+			--max-w:920px; --measure:66ch;
+			color-scheme: dark;
+		}
+		*{box-sizing:border-box}
+		html,body{height:100%}
+		body{
+			margin:0; font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+			background:linear-gradient(180deg,var(--bg) 0%, #070707 60%); color: #fff; -webkit-font-smoothing:antialiased;
+			display:flex; align-items:center; justify-content:center; padding:56px 20px;
+		}
+		.wrap{width:100%; max-width:var(--max-w);padding:20px}
+		header{display:flex;align-items:center;gap:16px;margin-bottom:28px}
+		.logo{width:68px;height:68px;border-radius:10px;background:transparent;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent);font-size:20px}
+		h1{margin:0;font-size:34px;letter-spacing: -0.4px}
+		p.lead{margin:8px 0 0;color:var(--muted);max-width:var(--measure)}
+		.header-line{height:1px;background:linear-gradient(90deg,transparent,rgba(255,212,0,0.08),transparent);margin:18px 0}
+
+		.grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:start}
+		@media (max-width:880px){.grid{grid-template-columns:1fr;}}
+
+		.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));background-color:var(--card);border-radius:14px;padding:28px;box-shadow:0 10px 50px rgba(0,0,0,0.6);border:1px solid rgba(255,212,0,0.06)}
+
+		.hero h2{margin:0 0 8px;font-size:24px}
+		.hero p{margin:0;color:var(--muted);font-size:15px;line-height:1.7}
+		.hero-header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+		.tags{display:flex;gap:8px}
+		.tag{background:rgba(255,212,0,0.08);color:var(--accent);padding:6px 10px;border-radius:999px;font-size:13px;font-weight:700}
+
+		.actions{display:flex;gap:12px;margin-top:20px;align-items:center}
+		.btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:10px;background:var(--accent);color:#0a0a0a;font-weight:800;text-decoration:none;box-shadow:0 6px 18px rgba(255,212,0,0.12)}
+		.btn.secondary{background:transparent;border:1px solid rgba(255,212,0,0.18);color:var(--muted);font-weight:700}
+		.btn:hover{transform:translateY(-2px)}
+		.btn.secondary:hover{background:rgba(255,212,0,0.03)}
+
+		.meta{margin-top:14px;color:var(--muted);font-size:13px;display:flex;flex-direction:column;gap:6px}
+		.meta-item{display:flex;align-items:center;gap:8px}
+		.meta-item strong{color:var(--muted);font-weight:700}
+
+		.aside .preview{height:220px;border-radius:10px;overflow:hidden;background:var(--glass);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+		.list{margin-top:18px;display:grid;gap:12px}
+		.feature{display:flex;gap:12px;align-items:flex-start;background:rgba(255,212,0,0.02);padding:10px;border-radius:10px}
+
+
+		.dot{width:10px;height:10px;border-radius:3px;background:var(--accent);margin-top:6px}
+
+		strong{color:#fff}
+		a{color:var(--accent)}
+
+		@media (max-width:540px){
+			.actions{flex-direction:column}
+			.btn{width:100%;justify-content:center}
+			.btn.secondary{width:100%;text-align:center}
+		}
+
+			.disclaimer{margin-top:16px;background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;color:var(--muted);font-size:14px;line-height:1.5}
+
+		footer{margin-top:32px;color:var(--muted);font-size:13px;text-align:center}
+
+		a.btn:focus{outline:3px solid rgba(255,212,0,0.18)}
+
+		.disclaimer{margin-top:18px;background:transparent;border-left:3px solid rgba(255,212,0,0.18);padding:14px 16px;color:var(--muted);font-size:14px;line-height:1.5;border-radius:6px}
+
+		footer{margin-top:36px;color:var(--muted);font-size:13px;text-align:center}
+		footer .muted{color:rgba(255,255,255,0.55)}
+	</style>
+</head>
+<body>
+	<div class="wrap">
+		<header>
+			<div class="logo">IE</div>
+			<div>
+				<h1>Indie — 独立游戏合集</h1>
+				<p class="lead">精选小型独立游戏与创作展示。点击图块即可打开游戏。</p>
+			</div>
+		</header>
+
+		<div class="header-line"></div>
+
+		<div style="max-width:var(--max-w);margin:0 auto 18px;display:flex;justify-content:flex-end">
+			<a class="btn secondary" href="intro.html">获取 DeepSeek API Key</a>
+		</div>
+
+		<main class="grid">
+			<section class="card hero">
+				<div class="hero-header">
+					<h2>中华帝国推演</h2>
+					<div class="tags"><span class="tag">策略</span><span class="tag">模拟</span></div>
+				</div>
+				<p>一款基于浏览器的策略/模拟小游戏，探索扩张与治理帝国的抉择。游戏在新的页面打开，支持桌面与移动浏览器。</p>
+
+				<div class="actions">
+					<a class="btn" href="game/china-empire-game.html" target="_blank" rel="noopener noreferrer">立即开始</a>
+					<a class="btn secondary" href="game/china-empire-game.html">在当前页打开</a>
+				</div>
+
+				<div class="meta">
+					<div class="meta-item"><strong>进度：</strong><span>早期体验版</span></div>
+					<div class="meta-item"><strong>作者：</strong><span>目渺渺兮</span></div>
+					<div class="meta-item"><strong>联系：</strong><a href="mailto:2302945833@qq.com" style="color:var(--accent);text-decoration:none">2302945833@qq.com</a></div>
+				<div class="meta-item"><strong>玩法：</strong><span>资源管理、领土扩张、事件决策</span></div>
+			</div>
+
+				<div class="disclaimer">
+					<strong>免责声明：</strong> 本游戏仅供娱乐，不代表真实历史事件与人物评价。作者尊重历史与文化根源，坚决反对历史虚无主义。如有雷同，纯属巧合。恳请受众以开放心态游玩，切勿将其与现实历史、宗教传统直接对应。如有侵权或需删除内容，请联系作者。
+				</div>
+			</section>
+
+
+		</main>
+
+		<footer>
+			<div>玩得开心！</div>
+			<div style="margin-top:6px">© 2026 Indie Games</div>
+		</footer>
+	</div>
+</body>
+</html>
