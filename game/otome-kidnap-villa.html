@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>囚笼与玫瑰</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&display=swap');
+        
+        :root {
+            --bg: #0a0709;
+            --bg-panel: #151013;
+            --bg-panel-2: #1f171c;
+            --accent: #8b1e3f;
+            --accent-light: #c73e5b;
+            --accent-glow: rgba(199, 62, 91, 0.25);
+            --gold: #d4af37;
+            --gold-dim: #8a7a4a;
+            --text: #f0e6e9;
+            --text-muted: #9a8b91;
+            --danger: #7a1028;
+            --love: #c2185b;
+            --escape: #2e7d32;
+            --mystery: #5d3a8a;
+            --border: rgba(212, 175, 55, 0.15);
+            --shadow: 0 20px 60px rgba(0,0,0,0.7);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 16px;
+            line-height: 1.8;
+            background-image: 
+                radial-gradient(circle at 20% 10%, rgba(139, 30, 63, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 80% 90%, rgba(93, 58, 138, 0.1) 0%, transparent 40%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L37 23L60 30L37 37L30 60L23 37L0 30L23 23Z' fill='%23d4af37' fill-opacity='0.03'/%3E%3C/svg%3E");
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(21, 16, 19, 0.95);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent), var(--gold), var(--accent), transparent);
+            opacity: 0.6;
+        }
+        
+        header { text-align: center; margin-bottom: 8px; position: relative; z-index: 1; }
+        h1 {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 2.8em;
+            background: linear-gradient(135deg, var(--gold) 0%, #fff 50%, var(--accent-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.15em;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
+        }
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.05em;
+            letter-spacing: 0.1em;
+            margin-top: 6px;
+            font-style: italic;
+        }
+        .rose-divider {
+            text-align: center;
+            margin: 12px 0 22px;
+            color: var(--accent-light);
+            font-size: 1.2em;
+            letter-spacing: 8px;
+            opacity: 0.5;
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 14px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px 8px 0 0;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.95em;
+        }
+        .tab:hover {
+            background: rgba(199, 62, 91, 0.1);
+            color: var(--text);
+            transform: translateY(-2px);
+        }
+        .tab.active {
+            background: linear-gradient(180deg, rgba(139, 30, 63, 0.4), rgba(139, 30, 63, 0.15));
+            border-color: var(--accent);
+            color: var(--gold);
+            font-weight: 600;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        
+        .content { display: none; animation: fadeIn 0.6s ease; }
+        .content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .panel {
+            background: var(--bg-panel);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.06);
+            position: relative;
+        }
+        .panel::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-light), transparent);
+            opacity: 0.3;
+        }
+        .panel-title {
+            color: var(--gold);
+            font-size: 1.15em;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .status-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .status-label { color: var(--text-muted); font-size: 0.8em; letter-spacing: 0.05em; }
+        .status-value { color: var(--gold); font-size: 1.3em; font-weight: 600; margin-top: 4px; }
+        
+        .story-display {
+            min-height: 320px;
+            max-height: 520px;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 18px;
+            font-size: 1.05em;
+            line-height: 2;
+        }
+        .story-display::-webkit-scrollbar { width: 6px; }
+        .story-display::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 3px; }
+        .story-display::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+        .story-paragraph {
+            margin-bottom: 16px;
+            padding: 16px 18px;
+            background: rgba(255,255,255,0.02);
+            border-left: 3px solid var(--accent-light);
+            border-radius: 0 10px 10px 0;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .story-paragraph.ai-generated { border-left-color: var(--mystery); background: rgba(93, 58, 138, 0.06); }
+        .story-speaker {
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .story-location {
+            display: inline-block;
+            background: rgba(139, 30, 63, 0.15);
+            color: var(--accent-light);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+        
+        .choices-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .choice-btn {
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: left;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.98em;
+            line-height: 1.6;
+            position: relative;
+            overflow: hidden;
+        }
+        .choice-btn::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0; width: 3px;
+            background: var(--accent-light);
+            transition: width 0.25s ease;
+        }
+        .choice-btn:hover {
+            background: rgba(199, 62, 91, 0.1);
+            border-color: var(--accent-light);
+            transform: translateX(4px);
+        }
+        .choice-btn:hover::before { width: 5px; }
+        .choice-btn.escape { border-color: rgba(46, 125, 50, 0.3); }
+        .choice-btn.escape::before { background: var(--escape); }
+        .choice-btn.escape:hover { background: rgba(46, 125, 50, 0.08); }
+        .choice-btn.love { border-color: rgba(194, 24, 89, 0.3); }
+        .choice-btn.love::before { background: var(--love); }
+        .choice-btn.love:hover { background: rgba(194, 24, 89, 0.08); }
+        .choice-btn.investigate { border-color: rgba(93, 58, 138, 0.3); }
+        .choice-btn.investigate::before { background: var(--mystery); }
+        .choice-btn.investigate:hover { background: rgba(93, 58, 138, 0.08); }
+        .choice-tag {
+            display: inline-block;
+            font-size: 0.7em;
+            padding: 1px 6px;
+            border-radius: 4px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .tag-love { background: rgba(194, 24, 89, 0.2); color: var(--love); }
+        .tag-escape { background: rgba(46, 125, 50, 0.2); color: #4caf50; }
+        .tag-investigate { background: rgba(93, 58, 138, 0.2); color: #b388ff; }
+        
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .custom-input {
+            flex: 1;
+            padding: 12px 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.95em;
+        }
+        .custom-input:focus {
+            outline: none;
+            border-color: var(--accent-light);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+        
+        button.action {
+            padding: 10px 22px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.95em;
+        }
+        button.action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 18px rgba(199, 62, 91, 0.35);
+        }
+        button.action:disabled {
+            background: #444;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        button.secondary {
+            background: rgba(255,255,255,0.08);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        button.secondary:hover { background: rgba(255,255,255,0.15); }
+        button.danger { background: linear-gradient(135deg, #7a1028, #a51d3d); }
+        
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+        .character-card {
+            background: var(--bg-panel-2);
+            border-radius: 14px;
+            padding: 18px;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .character-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border-color: rgba(199, 62, 91, 0.3);
+        }
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; width: 80px; height: 80px;
+            background: radial-gradient(circle, rgba(139, 30, 63, 0.15), transparent 70%);
+            pointer-events: none;
+        }
+        .char-avatar {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.2));
+        }
+        .char-name {
+            text-align: center;
+            font-size: 1.2em;
+            color: var(--gold);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .char-role {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85em;
+            margin-bottom: 14px;
+        }
+        .char-bio {
+            font-size: 0.88em;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 14px;
+            min-height: 60px;
+        }
+        .affection-bar {
+            margin-top: 10px;
+        }
+        .affection-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .progress-track {
+            height: 8px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+            position: relative;
+        }
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .fill-love { background: linear-gradient(90deg, var(--love), #ff6b9d); }
+        .fill-fear { background: linear-gradient(90deg, #5c0a1e, var(--danger)); }
+        .fill-trust { background: linear-gradient(90deg, var(--escape), #81c784); }
+        
+        .clue-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+        }
+        .clue-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
+        }
+        .clue-item:hover { border-color: var(--gold); transform: translateY(-2px); }
+        .clue-item.undiscovered {
+            opacity: 0.5;
+            filter: grayscale(0.6);
+        }
+        .clue-title { color: var(--gold); font-weight: 600; margin-bottom: 6px; }
+        .clue-desc { color: var(--text-muted); font-size: 0.9em; line-height: 1.6; }
+        .clue-source { color: var(--accent-light); font-size: 0.8em; margin-top: 8px; font-style: italic; }
+        
+        .ending-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .ending-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 14px;
+            padding: 18px;
+            border: 1px solid rgba(255,255,255,0.06);
+            position: relative;
+        }
+        .ending-card.unlocked { border-color: var(--gold); background: rgba(212, 175, 55, 0.05); }
+        .ending-card.locked { opacity: 0.5; }
+        .ending-status {
+            position: absolute;
+            top: 12px; right: 12px;
+            font-size: 0.75em;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        .status-unlocked { background: var(--gold); color: var(--bg); font-weight: 600; }
+        .status-locked { background: rgba(255,255,255,0.1); color: var(--text-muted); }
+        .ending-title { color: var(--gold); font-size: 1.1em; margin-bottom: 8px; font-weight: 600; }
+        .ending-desc { color: var(--text-muted); font-size: 0.9em; line-height: 1.6; margin-bottom: 10px; }
+        .ending-condition { color: var(--accent-light); font-size: 0.8em; font-style: italic; }
+        
+        .control-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        
+        .log {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 14px;
+            max-height: 250px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82em;
+            line-height: 1.6;
+        }
+        .log-entry {
+            margin: 4px 0;
+            padding: 4px 8px;
+            border-left: 2px solid var(--gold);
+        }
+        .log-entry.error { border-left-color: var(--danger); color: #ff8a9a; }
+        .log-entry.success { border-left-color: var(--escape); color: #a5d6a7; }
+        .log-entry.ai { border-left-color: var(--mystery); color: #b388ff; }
+        
+        .settings-group {
+            margin-bottom: 20px;
+        }
+        .settings-group label {
+            display: block;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-size: 0.9em;
+        }
+        .settings-group input, .settings-group select, .settings-group textarea {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.95em;
+        }
+        .settings-group input:focus, .settings-group select:focus, .settings-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-light);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+            animation: modalIn 0.5s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-title {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 1.8em;
+            color: var(--gold);
+            margin-bottom: 16px;
+        }
+        .modal-text {
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 24px;
+            font-size: 1.05em;
+        }
+        
+        .hint-text {
+            color: var(--text-muted);
+            font-size: 0.85em;
+            margin-top: 12px;
+            font-style: italic;
+        }
+        
+        @media (max-width: 640px) {
+            h1 { font-size: 2em; }
+            .container { padding: 18px; }
+            .story-display { max-height: 400px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>囚笼与玫瑰</h1>
+        <div class="rose-divider">🥀 🥀 🥀 🥀 🥀</div>
+        <div class="subtitle" id="subtitle">他们在黑暗中等你，而你只想逃出去</div>
+    </header>
+
+    <nav class="tabs" id="tab-bar">
+        <button class="tab active" data-tab="story">🥀 故事</button>
+        <button class="tab" data-tab="characters">🎭 角色</button>
+        <button class="tab" data-tab="clues">🔍 线索</button>
+        <button class="tab" data-tab="endings">🌙 结局</button>
+        <button class="tab" data-tab="settings">⚙️ AI设置</button>
+    </nav>
+
+    <div id="story" class="content active"></div>
+    <div id="characters" class="content"></div>
+    <div id="clues" class="content"></div>
+    <div id="endings" class="content"></div>
+    <div id="settings" class="content"></div>
+</div>
+
+<div class="modal-overlay" id="ending-modal">
+    <div class="modal">
+        <div class="modal-title" id="modal-title">结局</div>
+        <div class="modal-text" id="modal-text"></div>
+        <div class="control-row" style="justify-content: center;">
+            <button class="action" onclick="restartGame()">重新开始</button>
+            <button class="action secondary" onclick="closeModal()">继续浏览</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+//  游戏核心数据
+// ============================================================
+const DEFAULT_DATA = {
+    _version: 1,
+    day: 1,
+    hour: 8,
+    location: 'bedroom',
+    alertLevel: 0, // 0-100, 越高越难行动
+    escapeProgress: 0, // 0-100
+    discoveredClues: [],
+    unlockedEndings: [],
+    flags: {},
+    storyLog: [],
+    currentScene: 'prologue',
+    aiMode: false,
+    apiKey: '',
+    model: 'deepseek-chat',
+    customHistory: [], // 用于AI上下文的最近剧情摘要
+    
+    characters: {
+        shenmo: { name: '沈墨', role: '庄园主人', avatar: '🎩', affection: 0, fear: 30, trust: 0,
+            bio: '这座庄园的继承人，也是绑架计划的策划者。优雅、冷静，擅长洞察人心。他声称这一切都是为了"保护你"，但他的保护方式令人窒息。' },
+        guyechen: { name: '顾夜辰', role: '谈判专家', avatar: '🍷', affection: 0, fear: 20, trust: 0,
+            bio: '表面风流倜傥，总是带着意味深长的笑。他是团队与外界联络的窗口，善于用语言编织陷阱，让人心甘情愿走进牢笼。' },
+        luxiao: { name: '陆骁', role: '安保主管', avatar: '🔒', affection: 0, fear: 40, trust: 0,
+            bio: '沉默寡言的前特种兵，负责庄园的安保。肌肉与伤痕是他的语言。他服从沈墨的命令，但眼神中偶尔闪过一丝不忍。' },
+        baiche: { name: '白澈', role: '随行医生', avatar: '💉', affection: 0, fear: 15, trust: 0,
+            bio: '年轻温和的医生，会为你检查身体、送药、聊天。他看似最无害，却也是这个囚禁体系中不可或缺的一环。' }
+    },
+    
+    allClues: [
+        { id: 'window_bars', title: '铁窗与高度', desc: '卧室的窗户装有铁栏，窗外是约四米高的外墙，墙头嵌着碎玻璃。', source: '卧室', condition: 'location === "bedroom"' },
+        { id: 'guard_rotation', title: '巡逻规律', desc: '陆骁每两小时会巡视一次走廊，午夜交接班时有五分钟的空档。', source: '走廊', condition: 'flags.heard_patrol' },
+        { id: 'master_key', title: '万能钥匙', desc: '沈墨的西装内袋里挂着一串黄铜钥匙，能打开庄园大部分房间。', source: '沈墨', condition: 'flags.saw_keys' },
+        { id: 'safe_code', title: '保险柜密码', desc: '书房保险柜的密码与沈墨已故妹妹的生日有关：0417。', source: '书房', condition: 'flags.found_diary' },
+        { id: 'secret_tunnel', title: '废弃密道', desc: '酒窖深处有一扇被木箱挡住的暗门，通向庄园后山的松林。', source: '酒窖', condition: 'flags.explored_cellar' },
+        { id: 'phone_line', title: '被剪断的电话线', desc: '二楼客厅的电话线已被剪断，但 WiFi 路由器仍在运行。', source: '客厅', condition: 'location === "living_room"' },
+        { id: 'yechen_car', title: '顾夜辰的车', desc: '他的黑色轿车停在车库，钥匙通常在玄关的托盘里。', source: '车库', condition: 'flags.saw_garage' },
+        { id: 'baiche_hesitation', title: '白澈的动摇', desc: '他看着你时，眼神里有一种医生不该有的愧疚。', source: '白澈', condition: 'characters.baiche.affection >= 30' },
+        { id: 'shenmo_sister', title: '沈墨的妹妹', desc: '沈墨曾有一个妹妹，十年前在一场绑架案中失踪。他看你的眼神，有时像是在看她的影子。', source: '书房日记', condition: 'flags.found_diary' },
+        { id: 'real_reason', title: '真正的理由', desc: '你正在调查一桩跨国洗钱案，而他们害怕你知道的真相。', source: '保险柜文件', condition: 'flags.opened_safe' }
+    ],
+    
+    allEndings: [
+        { id: 'escape_alone', title: '孤身逃离', desc: '你利用密道逃出了庄园，在黎明前的松林里拦下一辆货车。自由了，但那段记忆将永远跟随你。', condition: 'escapeProgress >= 80 && affectionHighest() < 60', unlocked: false },
+        { id: 'shenmo_lover', title: '共犯与囚徒', desc: '你最终选择留在沈墨身边。你不再是猎物，而是他的共谋者。庄园的玫瑰年年盛开，而你是唯一被允许触摸它们的人。', condition: 'characters.shenmo.affection >= 80', unlocked: false },
+        { id: 'yechen_deal', title: '金丝雀契约', desc: '顾夜辰帮你伪造了新身份，带你离开了庄园。你住进他的城市公寓，像只被豢养的金丝雀，却乐在其中。', condition: 'characters.guyechen.affection >= 80', unlocked: false },
+        { id: 'luxiao_betrayal', title: '忠诚的背叛', desc: '陆骁放走了你。在沈墨的枪声中，他挡在你身后。你们驾车驶入暴雨，他的血染红了副驾驶座。', condition: 'characters.luxiao.affection >= 80 && characters.luxiao.trust >= 50', unlocked: false },
+        { id: 'baiche_redemption', title: '医生的救赎', desc: '白澈报警了。他亲手结束了这场囚禁，也亲手把自己送进了监狱。你在探监室的玻璃后，第一次对他说了谢谢。', condition: 'characters.baiche.affection >= 80 && characters.baiche.trust >= 50', unlocked: false },
+        { id: 'truth_exposed', title: '真相大白', desc: '你将所有证据交给警方，庄园被查封。四个男人各有归宿，而你终于能睡一个安稳的觉。', condition: 'discoveredClues.length >= 8 && flags.opened_safe', unlocked: false },
+        { id: 'give_up', title: '温水煮青蛙', desc: '你没有逃，也没有爱。日子一天天过去，你习惯了被照顾、被关注，直到有一天，你不再想离开。', condition: 'day >= 15 && escapeProgress < 30 && affectionHighest() < 50', unlocked: false },
+        { id: 'bad_end', title: '玫瑰凋零', desc: '你的反抗激怒了他们。某个深夜，你被注射了镇静剂，醒来时，世界安静得可怕。', condition: 'alertLevel >= 100', unlocked: false }
+    ]
+};
+
+let gameData;
+let currentChoices = [];
+
+// ============================================================
+//  工具函数
+// ============================================================
+function extractJSON(text) {
+    let match = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
+    if (match) return match[1].trim();
+    match = text.match(/\{[\s\S]*\}/);
+    if (match) return match[0].trim();
+    return text.trim();
+}
+
+function clone(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+function affectionHighest() {
+    let max = 0;
+    for (const key of Object.keys(gameData.characters)) {
+        max = Math.max(max, gameData.characters[key].affection);
+    }
+    return max;
+}
+
+function getMostLoved() {
+    let max = -1, name = '';
+    for (const key of Object.keys(gameData.characters)) {
+        if (gameData.characters[key].affection > max) {
+            max = gameData.characters[key].affection;
+            name = key;
+        }
+    }
+    return name;
+}
+
+function timeString() {
+    const h = gameData.hour;
+    const label = h < 6 ? '凌晨' : h < 12 ? '上午' : h < 18 ? '下午' : '夜晚';
+    return `第 ${gameData.day} 天 · ${label} ${h}:00`;
+}
+
+function evalCondition(condition) {
+    if (!condition) return true;
+    try {
+        return new Function('gameData', 'characters', 'return ' + condition)(gameData, gameData.characters);
+    } catch (e) { return false; }
+}
+
+function updateClues() {
+    for (const clue of gameData.allClues) {
+        if (gameData.discoveredClues.includes(clue.id)) continue;
+        if (evalCondition(clue.condition)) {
+            gameData.discoveredClues.push(clue.id);
+            addLog(`🔍 发现线索：${clue.title}`, 'ai');
+        }
+    }
+}
+
+function checkEndings() {
+    for (const ending of gameData.allEndings) {
+        if (ending.unlocked) continue;
+        if (evalCondition(ending.condition)) {
+            ending.unlocked = true;
+            gameData.unlockedEndings.push(ending.id);
+            addLog(`🌙 解锁结局：${ending.title}`, 'success');
+        }
+    }
+    
+    // 触发即时结局
+    if (gameData.alertLevel >= 100) return triggerEnding('bad_end');
+    
+    // 特殊地点/事件触发
+    if (gameData.flags.in_tunnel && gameData.escapeProgress >= 80) return triggerEnding('escape_alone');
+    if (gameData.flags.surrendered_to_shenmo) return triggerEnding('shenmo_lover');
+    if (gameData.flags.left_with_yechen) return triggerEnding('yechen_deal');
+    if (gameData.flags.luxiao_helped_escape) return triggerEnding('luxiao_betrayal');
+    if (gameData.flags.baiche_called_police) return triggerEnding('baiche_redemption');
+    if (gameData.flags.submitted_evidence) return triggerEnding('truth_exposed');
+    if (gameData.day >= 15 && gameData.escapeProgress < 30 && affectionHighest() < 50) return triggerEnding('give_up');
+    
+    return false;
+}
+
+function triggerEnding(endingId) {
+    const ending = gameData.allEndings.find(e => e.id === endingId);
+    if (!ending) return false;
+    if (!ending.unlocked) {
+        ending.unlocked = true;
+        gameData.unlockedEndings.push(endingId);
+    }
+    document.getElementById('modal-title').textContent = '结局：' + ending.title;
+    document.getElementById('modal-text').innerHTML = `<div style="font-size:1.3em; margin-bottom:16px;">${endingDescEmoji(endingId)}</div>${ending.desc}<br><br><em style="color:var(--gold);">—— 故事到此结束，但玫瑰永远盛开 ——</em>`;
+    document.getElementById('ending-modal').classList.add('active');
+    renderEndings();
+    saveGame();
+    return true;
+}
+
+function endingDescEmoji(id) {
+    const map = { 'escape_alone': '🌅', 'shenmo_lover': '🥀', 'yechen_deal': '🍷', 'luxiao_betrayal': '🌧️', 'baiche_redemption': '💊', 'truth_exposed': '📰', 'give_up': '🕯️', 'bad_end': '⚰️' };
+    return map[id] || '🌙';
+}
+
+function closeModal() { document.getElementById('ending-modal').classList.remove('active'); }
+
+function restartGame() {
+    localStorage.removeItem('cage-rose-save');
+    gameData = clone(DEFAULT_DATA);
+    closeModal();
+    renderAll();
+    advanceScene('prologue');
+    addLog('游戏已重置', 'success');
+}
+
+// ============================================================
+//  场景系统（本地剧情）
+// ============================================================
+const SCENES = {
+    prologue: {
+        text: [
+            { type: 'narration', content: '你醒来时，头痛欲裂。' },
+            { type: 'narration', content: '天花板是陌生的，雕花的，复古的。身下的床单带着薰衣草与旧书的味道，柔软得让人不安。' },
+            { type: 'narration', content: '这不是你的房间。' },
+            { type: 'narration', content: '最后的记忆，是你在杂志社楼下拦了一辆出租车，要去采访那桩洗钱案的关键证人。然后……车窗里的气味，和后颈的一阵刺痛。' },
+            { type: 'narration', content: '你坐起身，发现身上还穿着昨天的衣服，只是外套和包都不见了。房间很漂亮，像某个维多利亚时代的小说插图。唯一的违和，是窗户上漆黑的铁栏。' }
+        ],
+        choices: [
+            { text: '走到窗边，检查铁栏和窗外的地形', type: 'investigate', scene: 'check_window', effects: { escapeProgress: 5, alertLevel: 0 }, note: '增加逃跑进度' },
+            { text: '贴着门听外面的动静', type: 'investigate', scene: 'listen_door', effects: { flags: { heard_patrol: true }, alertLevel: 0 }, note: '可能获得巡逻线索' },
+            { text: '躺回床上，假装还没醒，等待机会', type: 'love', scene: 'pretend_sleep', effects: { characters: { shenmo: { affection: 5 } }, alertLevel: 0 }, note: '沈墨会亲自来看你' }
+        ]
+    },
+    
+    check_window: {
+        text: [
+            { type: 'narration', content: '你赤着脚走到窗边。铁栏焊得很死，栏杆之间的距离只够伸出去一只手。窗外是深秋的庭院，枯玫瑰在风里摇晃。' },
+            { type: 'narration', content: '楼下大约四米是青石地面，墙头嵌着碎玻璃。以你的身手，直接跳下去几乎不可能。但如果能找到绳子、床单或者别的工具……' },
+            { type: 'thought', content: '（你记住了：卧室在二楼，东侧，下方是庭院。）' }
+        ],
+        choices: [
+            { text: '检查房间里的家具，寻找可用工具', type: 'investigate', scene: 'search_room', effects: { escapeProgress: 5 }, note: '继续收集逃脱物资' },
+            { text: '用力摇晃铁栏，试图引起注意', type: 'escape', scene: 'attract_attention', effects: { alertLevel: 10 }, note: '提高警戒' },
+            { text: '保持安静，退回床上思考对策', type: 'love', scene: 'pretend_sleep', effects: { characters: { shenmo: { affection: 5 } } }, note: '等待沈墨' }
+        ]
+    },
+    
+    listen_door: {
+        text: [
+            { type: 'narration', content: '你把耳朵贴在厚重的木门上。走廊铺着地毯，脚步声被吞掉大半，但你还是捕捉到了规律。' },
+            { type: 'narration', content: '沉重的靴子，每两小时经过一次。另一个 lighter 的脚步声会轻声汇报："一切正常。"然后那串靴子声远去。' },
+            { type: 'thought', content: '（你记住了：午夜交接班，走廊会有五分钟的空档。）' }
+        ],
+        choices: [
+            { text: '等下一次脚步声经过时，确认是否只有一个人', type: 'investigate', scene: 'confirm_patrol', effects: { flags: { heard_patrol: true }, escapeProgress: 5 }, note: '确认巡逻情报' },
+            { text: '尝试转动门把手', type: 'escape', scene: 'door_locked', effects: { alertLevel: 5 }, note: '门被锁着' },
+            { text: '回到床上，保存体力', type: 'love', scene: 'rest_in_room', effects: { characters: { luxiao: { affection: 3 } } }, note: '陆骁欣赏安静的人' }
+        ]
+    },
+    
+    pretend_sleep: {
+        text: [
+            { type: 'narration', content: '你躺回床上，放慢呼吸，闭着眼睛，心跳却快得像要撞破肋骨。' },
+            { type: 'narration', content: '门锁传来轻微的咔哒声。有人进来了，脚步很轻，带着淡淡的雪松香气。' },
+            { type: 'dialogue', speaker: '沈墨', content: '醒了就不要再装睡了。你的睫毛在抖。' },
+            { type: 'narration', content: '你睁开眼。床边的男人穿着剪裁完美的黑色西装，手里端着一杯温水。他的脸像是从古典油画里走出来的，目光却冷得像冬天的湖。' },
+            { type: 'dialogue', speaker: '沈墨', content: '这里是沈家庄园。接下来的日子，你会住在这里。不要想着逃，外面的人找不到你。' }
+        ],
+        choices: [
+            { text: '冷冷地质问："你是谁？凭什么关我？"', type: 'escape', scene: 'confront_shenmo', effects: { characters: { shenmo: { affection: 5, fear: 10 } }, alertLevel: 10 }, note: '激起他的兴趣' },
+            { text: '接过水，低声问："至少告诉我原因。"', type: 'love', scene: 'ask_reason', effects: { characters: { shenmo: { affection: 10, trust: 5 } }, alertLevel: 0 }, note: '降低敌意' },
+            { text: '假装顺从，暗中观察他西装内袋的钥匙', type: 'investigate', scene: 'observe_keys', effects: { flags: { saw_keys: true }, escapeProgress: 10 }, note: '获得万能钥匙线索' }
+        ]
+    },
+    
+    search_room: {
+        text: [
+            { type: 'narration', content: '你开始不动声色地检查房间。梳妆台的抽屉里只有梳子和发带；衣柜里挂着几件尺码合适的衣裙——他们早就准备好了。' },
+            { type: 'narration', content: '床底有一个旧皮箱，锁坏了。里面是一卷麻绳、一只打火机、还有一本褪色的少女日记。' },
+            { type: 'thought', content: '（日记本的扉页写着："沈念，十七岁。"）' }
+        ],
+        choices: [
+            { text: '把麻绳和打火机藏好，继续读日记', type: 'investigate', scene: 'read_diary', effects: { flags: { found_diary: true }, escapeProgress: 10 }, note: '了解沈墨的过去' },
+            { text: '只带走工具，日记留给原处', type: 'escape', scene: 'take_tools', effects: { escapeProgress: 15 }, note: '专注逃脱' },
+            { text: '把日记放回原处，避免被发现', type: 'love', scene: 'hide_diary', effects: { characters: { baiche: { affection: 5 } } }, note: '白澈会注意到你的谨慎' }
+        ]
+    },
+    
+    read_diary: {
+        text: [
+            { type: 'narration', content: '你快速翻阅日记。沈念是沈墨的妹妹，十年前在放学途中失踪，此后杳无音信。' },
+            { type: 'narration', content: '最后一页写着："哥哥今天又做噩梦了。他说，如果当年被带走的是我，他宁愿一辈子把我藏起来。"' },
+            { type: 'narration', content: '你忽然意识到，沈墨看你的眼神里，总有一种不该属于绑匪的……悲伤。' },
+            { type: 'thought', content: '（你发现了书房保险柜密码的线索：0417，沈念的生日。）' }
+        ],
+        choices: [
+            { text: '把日记藏进衣服里，这是重要证据', type: 'investigate', scene: 'hide_diary_evidence', effects: { flags: { found_diary: true }, escapeProgress: 5 }, note: '保留证据' },
+            { text: '合上日记，对沈墨产生一丝复杂情绪', type: 'love', scene: 'pity_shenmo', effects: { characters: { shenmo: { affection: 15, trust: 5 } } }, note: '软化他的态度' },
+            { text: '这不能成为他犯罪的借口，坚定逃跑计划', type: 'escape', scene: 'determine_escape', effects: { escapeProgress: 15 }, note: '决心逃离' }
+        ]
+    },
+    
+    ask_reason: {
+        text: [
+            { type: 'dialogue', speaker: '沈墨', content: '原因？因为你正在追查不该查的东西。' },
+            { type: 'narration', content: '他在床边的扶手椅上坐下，长腿交叠，像是在讨论天气。' },
+            { type: 'dialogue', speaker: '沈墨', content: '那份洗钱案卷宗背后的人，不会允许你活着把报道发出去。我把你带到这里，是让你活着。你应该感谢我。' },
+            { type: 'narration', content: '他的语气平淡，却有一种令人毛骨悚然的笃定。你分不清这是威胁，还是某种扭曲的告白。' }
+        ],
+        choices: [
+            { text: '"所以你承认这是绑架？我会把你送进监狱。"', type: 'escape', scene: 'threaten_shenmo', effects: { characters: { shenmo: { affection: 5, fear: 15 } }, alertLevel: 15 }, note: '强硬对抗' },
+            { text: '"如果我放弃调查，你会放我走吗？"', type: 'love', scene: 'negotiate_shenmo', effects: { characters: { shenmo: { affection: 10, trust: 10 } }, alertLevel: 5 }, note: '试探他的底线' },
+            { text: '沉默，假装被说服，暗中观察房间布局', type: 'investigate', scene: 'observe_room', effects: { escapeProgress: 10 }, note: '收集情报' }
+        ]
+    },
+    
+    // 公共地点与事件场景
+    explore_hallway: {
+        text: [
+            { type: 'narration', content: '你走出卧室，进入铺着深红地毯的走廊。两侧挂着油画，尽头是一扇双开的木门，通向客厅。' },
+            { type: 'narration', content: '你听到楼下有人在说话。一个低沉，一个带着笑。' }
+        ],
+        choices: [
+            { text: '下楼去客厅，看看谁在说话', type: 'investigate', scene: 'living_room', effects: { alertLevel: 5 }, note: '进入客厅' },
+            { text: '先探索走廊尽头的书房', type: 'investigate', scene: 'study', effects: { escapeProgress: 5 }, note: '书房可能有机密' },
+            { text: '听见陆骁的脚步声，立刻退回房间', type: 'escape', scene: 'back_to_room', effects: { alertLevel: 0 }, note: '避免冲突' }
+        ]
+    },
+    
+    living_room: {
+        text: [
+            { type: 'narration', content: '客厅里，顾夜辰正倚在壁炉旁喝红酒，陆骁站在窗边，像一尊黑影。' },
+            { type: 'dialogue', speaker: '顾夜辰', content: '呀，小公主醒了。过来坐，别那么紧张。' },
+            { type: 'narration', content: '他举起酒杯，笑得像只优雅的狐狸。陆骁没有回头，但你能感觉到他的肌肉绷紧了。' }
+        ],
+        choices: [
+            { text: '"别叫我公主。我不是你们的玩具。"', type: 'escape', scene: 'defy_yechen', effects: { characters: { guyechen: { affection: 10 }, luxiao: { affection: 5 } }, alertLevel: 10 }, note: '强硬态度吸引顾夜辰' },
+            { text: '坐到沙发上，假装配合，套取情报', type: 'investigate', scene: 'chat_living_room', effects: { characters: { guyechen: { affection: 5 }, luxiao: { trust: 5 } }, alertLevel: 5 }, note: '收集对话信息' },
+            { text: '走向陆骁，问他为什么这么做', type: 'love', scene: 'question_luxiao', effects: { characters: { luxiao: { affection: 10, trust: 5 } }, alertLevel: 0 }, note: '软化陆骁' }
+        ]
+    },
+    
+    study: {
+        text: [
+            { type: 'narration', content: '书房里弥漫着旧皮革和墨水的味道。巨大的胡桃木书桌后，是一个保险柜。' },
+            { type: 'narration', content: '你试着输入 0417。咔哒。保险柜开了。' },
+            { type: 'narration', content: '里面是一叠文件，还有一张照片——一个和你有几分相似的少女。' }
+        ],
+        choices: [
+            { text: '快速阅读文件，用手机拍照（如果手机还在）', type: 'investigate', scene: 'read_documents', effects: { flags: { opened_safe: true }, escapeProgress: 20 }, note: '获得洗钱证据' },
+            { text: '只带走那张照片，其他不动', type: 'love', scene: 'take_photo', effects: { characters: { shenmo: { affection: 15, fear: 10 } }, alertLevel: 10 }, note: '触动沈墨' },
+            { text: '关好保险柜，装作什么都没发生', type: 'escape', scene: 'leave_study', effects: { alertLevel: 0 }, note: '保守行事' }
+        ]
+    },
+    
+    cellar: {
+        text: [
+            { type: 'narration', content: '酒窖很冷，空气里满是橡木桶和潮湿石墙的味道。你绕过一排排酒架，在最深处发现了一扇被木箱挡住的暗门。' },
+            { type: 'narration', content: '暗门上有新鲜的划痕，似乎最近有人使用过。门后传来微弱的气流。' }
+        ],
+        choices: [
+            { text: '推开木箱，进入暗门', type: 'escape', scene: 'enter_tunnel', effects: { flags: { explored_cellar: true }, escapeProgress: 30 }, note: '发现密道' },
+            { text: '先记住位置，等夜深再来', type: 'investigate', scene: 'mark_tunnel', effects: { flags: { explored_cellar: true }, escapeProgress: 15 }, note: '安全撤退' },
+            { text: '听见白澈下楼的脚步声，迎上去求助', type: 'love', scene: 'meet_baiche_cellar', effects: { characters: { baiche: { affection: 15, trust: 10 } }, alertLevel: 5 }, note: '与白澈独处' }
+        ]
+    },
+    
+    enter_tunnel: {
+        text: [
+            { type: 'narration', content: '密道狭窄而黑暗，空气中是泥土和松针的味道。你用手机屏幕的微弱光芒照亮前路，走了大约十分钟，终于看到出口的微光。' },
+            { type: 'narration', content: '出口被藤蔓遮掩，外面是庄园后山的松林。远处，城市的灯火若隐若现。' },
+            { type: 'thought', content: '（只要再穿过这片松林，就能找到公路。）' }
+        ],
+        choices: [
+            { text: '不顾一切冲向公路', type: 'escape', scene: 'run_to_road', effects: { flags: { in_tunnel: true }, escapeProgress: 50 }, note: '直奔自由' },
+            { text: '在松林里躲到天亮，观察庄园动静', type: 'investigate', scene: 'hide_in_forest', effects: { escapeProgress: 20 }, note: '谨慎行事' },
+            { text: '想起某个人的眼神，犹豫着停下脚步', type: 'love', scene: 'hesitate_in_forest', effects: { flags: { in_tunnel: true } }, note: '情感抉择' }
+        ]
+    },
+    
+    // 角色专属深度场景
+    date_shenmo: {
+        text: [
+            { type: 'narration', content: '沈墨带你去了温室。里面种满了他妹妹生前最爱的白玫瑰。' },
+            { type: 'dialogue', speaker: '沈墨', content: '她和你一样，总是喜欢问为什么。' },
+            { type: 'narration', content: '他的指尖掠过一朵玫瑰，动作轻得像在触碰回忆。' }
+        ],
+        choices: [
+            { text: '"我不是她。别把我当成她的替代品。"', type: 'escape', scene: 'shenmo_angry', effects: { characters: { shenmo: { affection: 5, fear: 20 } }, alertLevel: 20 }, note: '刺痛他' },
+            { text: '安静地陪他站了一会儿', type: 'love', scene: 'shenmo_open', effects: { characters: { shenmo: { affection: 20, trust: 10 } }, alertLevel: -10 }, note: '大幅提升好感' },
+            { text: '询问他是否愿意让你离开温室', type: 'investigate', scene: 'shenmo_test', effects: { characters: { shenmo: { trust: 5 } }, escapeProgress: 10 }, note: '试探自由度' }
+        ]
+    },
+    
+    date_yechen: {
+        text: [
+            { type: 'narration', content: '顾夜辰在露台摆了一桌下午茶，像是在招待一位真正的客人。' },
+            { type: 'dialogue', speaker: '顾夜辰', content: '你知道吗？我其实是反对这个主意的。但沈墨说，只有这里能让你安全。' },
+            { type: 'narration', content: '他的眼睛弯成好看的弧度，你却分不清哪句是真，哪句是演。' }
+        ],
+        choices: [
+            { text: '"那你放我走。"', type: 'escape', scene: 'yechen_tempt', effects: { characters: { guyechen: { affection: 10 } }, escapeProgress: 10 }, note: '他可能会答应' },
+            { text: '笑着问他的真实身份', type: 'love', scene: 'yechen_confess', effects: { characters: { guyechen: { affection: 15, trust: 10 } }, alertLevel: 5 }, note: '他欣赏聪明人' },
+            { text: '套取庄园的守卫换班时间', type: 'investigate', scene: 'yechen_info', effects: { escapeProgress: 15 }, note: '获得情报' }
+        ]
+    },
+    
+    date_luxiao: {
+        text: [
+            { type: 'narration', content: '陆骁在训练室里打沙袋。汗水顺着他的下颌滑落，他看到你，立刻停下了动作。' },
+            { type: 'dialogue', speaker: '陆骁', content: '你不该来这里。' },
+            { type: 'narration', content: '他的语气很硬，却递给你一瓶没开封的水。' }
+        ],
+        choices: [
+            { text: '"你不像他们。你为什么不放我走？"', type: 'love', scene: 'luxiao_guilt', effects: { characters: { luxiao: { affection: 15, trust: 10 } }, alertLevel: 5 }, note: '触动他' },
+            { text: '请求他教你一点防身术', type: 'investigate', scene: 'luxiao_train', effects: { characters: { luxiao: { affection: 10, trust: 5 } }, escapeProgress: 10 }, note: '学习技能' },
+            { text: '冷冷转身离开，不给他好脸色', type: 'escape', scene: 'luxiao_sad', effects: { characters: { luxiao: { affection: -5 } }, alertLevel: 0 }, note: '降低好感' }
+        ]
+    },
+    
+    date_baiche: {
+        text: [
+            { type: 'narration', content: '白澈来给你做例行检查。他的手指搭在你腕上测脉搏，动作很轻。' },
+            { type: 'dialogue', speaker: '白澈', content: '你最近睡得好吗？做噩梦吗？' },
+            { type: 'narration', content: '他的关心听起来是真的。你忽然想：这个人，也许是唯一能帮你的。' }
+        ],
+        choices: [
+            { text: '告诉他你害怕，请求他帮你报警', type: 'love', scene: 'baiche_plea', effects: { characters: { baiche: { affection: 20, trust: 15 } }, alertLevel: 5 }, note: '大幅提升信任' },
+            { text: '询问药物里有没有镇静剂', type: 'investigate', scene: 'baiche_drug', effects: { escapeProgress: 10 }, note: '了解药物' },
+            { text: '保持沉默，不给他更多把柄', type: 'escape', scene: 'baiche_distance', effects: { characters: { baiche: { affection: 5 } } }, note: '保持距离' }
+        ]
+    },
+    
+    // 结局触发场景
+    run_to_road: {
+        text: [
+            { type: 'narration', content: '你在松林里狂奔，树枝划伤手臂，呼吸里全是血腥味。身后，庄园的灯光越来越远。' },
+            { type: 'narration', content: '终于，你听到了汽车引擎的声音。一辆货车出现在公路尽头，司机被你拦下，惊恐地看着浑身狼狈的你。' },
+            { type: 'narration', content: '你回头看了最后一眼。庄园像一头沉睡的兽，隐没在夜色里。' }
+        ],
+        choices: [
+            { text: '坐上货车，永远离开这里', type: 'escape', scene: 'ending_escape_alone', effects: { flags: { in_tunnel: true } } }
+        ]
+    },
+    
+    surrender_shenmo: {
+        text: [
+            { type: 'narration', content: '沈墨站在玫瑰丛里，看着你。他没有追你，只是静静地等。' },
+            { type: 'dialogue', speaker: '沈墨', content: '你可以走。但你不会。' },
+            { type: 'narration', content: '你停下了脚步。他是对的。你已经分不清，自己是真的被困，还是已经不想离开。' }
+        ],
+        choices: [
+            { text: '走向他，把手放进他掌心', type: 'love', scene: 'ending_shenmo_lover', effects: { flags: { surrendered_to_shenmo: true } } }
+        ]
+    },
+    
+    leave_with_yechen: {
+        text: [
+            { type: 'narration', content: '顾夜辰把钥匙放在你手心。"车库那辆黑色轿车，我会在二十分钟后来找你。"' },
+            { type: 'narration', content: '他真的做到了。当你坐进副驾驶，他替你系好安全带，笑得像一只得逞的狐狸。' }
+        ],
+        choices: [
+            { text: '跟他走', type: 'love', scene: 'ending_yechen_deal', effects: { flags: { left_with_yechen: true } } }
+        ]
+    },
+    
+    luxiao_help_escape: {
+        text: [
+            { type: 'narration', content: '陆骁在午夜打开你的房门，手里拿着车和钥匙。"跟我走。"' },
+            { type: 'narration', content: '你们的车刚驶出庄园，身后就传来了枪声。他扑在你身上，温热的血溅上你的脸。' }
+        ],
+        choices: [
+            { text: '握紧他的手，告诉他一定要撑住', type: 'love', scene: 'ending_luxiao_betrayal', effects: { flags: { luxiao_helped_escape: true } } }
+        ]
+    },
+    
+    baiche_call_police: {
+        text: [
+            { type: 'narration', content: '白澈把手机递给你，屏幕上显示着 110。"打吧。我帮你作证。"' },
+            { type: 'narration', content: '警笛声划破庄园的宁静。你被护送出去时，白澈已经戴上了手铐。' }
+        ],
+        choices: [
+            { text: '在警车离开前，回头看了他一眼', type: 'love', scene: 'ending_baiche_redemption', effects: { flags: { baiche_called_police: true } } }
+        ]
+    },
+    
+    submit_evidence: {
+        text: [
+            { type: 'narration', content: '你把保险柜里的文件、庄园的照片、以及白澈提供的证词，全部交给了专案组。' },
+            { type: 'narration', content: '三天后，庄园被查封。你站在警戒线外，看着四个男人被押上警车。' }
+        ],
+        choices: [
+            { text: '转身离开，走进阳光里', type: 'escape', scene: 'ending_truth_exposed', effects: { flags: { submitted_evidence: true } } }
+        ]
+    }
+};
+
+// 结局触发场景映射到结局
+const ENDING_SCENE_MAP = {
+    'ending_escape_alone': 'escape_alone',
+    'ending_shenmo_lover': 'shenmo_lover',
+    'ending_yechen_deal': 'yechen_deal',
+    'ending_luxiao_betrayal': 'luxiao_betrayal',
+    'ending_baiche_redemption': 'baiche_redemption',
+    'ending_truth_exposed': 'truth_exposed'
+};
+
+// ============================================================
+//  渲染
+// ============================================================
+function renderAll() {
+    renderStory();
+    renderCharacters();
+    renderClues();
+    renderEndings();
+    renderSettings();
+    updateSubtitle();
+}
+
+function updateSubtitle() {
+    const loved = getMostLoved();
+    let hint = '';
+    if (loved) {
+        const char = gameData.characters[loved];
+        if (char.affection >= 60) hint = ` · ${char.name} 似乎对你动了真心`;
+    }
+    document.getElementById('subtitle').textContent = `${timeString()} · ${locationName(gameData.location)} · 警戒 ${gameData.alertLevel}%${hint}`;
+}
+
+function locationName(loc) {
+    const map = { 'bedroom': '卧室', 'hallway': '走廊', 'living_room': '客厅', 'study': '书房', 'cellar': '酒窖', 'garden': '温室', 'kitchen': '厨房', 'garage': '车库', 'tunnel': '密道', 'forest': '松林' };
+    return map[loc] || '庄园';
+}
+
+function renderStory() {
+    const el = document.getElementById('story');
+    el.innerHTML = `
+        <div class="status-bar">
+            <div class="status-item"><div class="status-label">时间</div><div class="status-value">${timeString()}</div></div>
+            <div class="status-item"><div class="status-label">地点</div><div class="status-value">${locationName(gameData.location)}</div></div>
+            <div class="status-item"><div class="status-label">逃跑进度</div><div class="status-value">${gameData.escapeProgress}%</div></div>
+            <div class="status-item"><div class="status-label">警戒等级</div><div class="status-value" style="color:${gameData.alertLevel > 60 ? 'var(--danger)' : 'var(--gold)'}">${gameData.alertLevel}%</div></div>
+        </div>
+        <div class="panel">
+            <div class="panel-title">🥀 剧情</div>
+            <div class="story-display" id="story-display"></div>
+            <div class="choices-grid" id="choices-grid"></div>
+            <div class="input-row" id="custom-action-row" style="display:${gameData.aiMode ? 'flex' : 'none'}">
+                <input type="text" class="custom-input" id="custom-action" placeholder="输入你的行动（例如：试图说服陆骁放我走）...">
+                <button class="action" onclick="submitCustomAction()">行动</button>
+            </div>
+            <div class="hint-text">${gameData.aiMode ? 'AI 模式已开启：你既可以选择预设选项，也可以输入自定义行动。' : '本地模式：从预设选项中选择以推动剧情。在设置中开启 DeepSeek AI 可获得更自由的叙事体验。'}</div>
+        </div>
+    `;
+    renderStoryLog();
+    renderChoices();
+}
+
+function renderStoryLog() {
+    const display = document.getElementById('story-display');
+    if (!display) return;
+    display.innerHTML = gameData.storyLog.map(p => {
+        if (p.type === 'dialogue') {
+            return `<div class="story-paragraph ${p.ai ? 'ai-generated' : ''}"><div class="story-speaker">${p.speaker}</div>${p.content}</div>`;
+        }
+        return `<div class="story-paragraph ${p.ai ? 'ai-generated' : ''}">${p.type === 'thought' ? '<em style="color:var(--text-muted);">（' + p.content + '）</em>' : p.content}</div>`;
+    }).join('');
+    display.scrollTop = display.scrollHeight;
+}
+
+function renderChoices() {
+    const grid = document.getElementById('choices-grid');
+    if (!grid) return;
+    grid.innerHTML = currentChoices.map((c, i) => `
+        <button class="choice-btn ${c.type}" onclick="choose(${i})">
+            <span class="choice-tag tag-${c.type}">${typeLabel(c.type)}</span>
+            ${c.text}
+            ${c.note ? `<span style="color:var(--text-muted);font-size:0.8em;margin-left:8px;">(${c.note})</span>` : ''}
+        </button>
+    `).join('');
+}
+
+function typeLabel(t) {
+    return { 'love': '攻略', 'escape': '逃脱', 'investigate': '探索' }[t] || '行动';
+}
+
+function renderCharacters() {
+    const el = document.getElementById('characters');
+    const cards = Object.entries(gameData.characters).map(([key, c]) => `
+        <div class="character-card">
+            <div class="char-avatar">${c.avatar}</div>
+            <div class="char-name">${c.name}</div>
+            <div class="char-role">${c.role}</div>
+            <div class="char-bio">${c.bio}</div>
+            <div class="affection-bar">
+                <div class="affection-label"><span>好感</span><span>${c.affection}%</span></div>
+                <div class="progress-track"><div class="progress-fill fill-love" style="width:${c.affection}%"></div></div>
+            </div>
+            <div class="affection-bar">
+                <div class="affection-label"><span>恐惧</span><span>${c.fear}%</span></div>
+                <div class="progress-track"><div class="progress-fill fill-fear" style="width:${c.fear}%"></div></div>
+            </div>
+            <div class="affection-bar">
+                <div class="affection-label"><span>信任</span><span>${c.trust}%</span></div>
+                <div class="progress-track"><div class="progress-fill fill-trust" style="width:${c.trust}%"></div></div>
+            </div>
+        </div>
+    `).join('');
+    el.innerHTML = `<div class="panel"><div class="panel-title">🎭 可攻略角色</div><div class="character-grid">${cards}</div></div>`;
+}
+
+function renderClues() {
+    const el = document.getElementById('clues');
+    const items = gameData.allClues.map(clue => {
+        const found = gameData.discoveredClues.includes(clue.id);
+        return `
+            <div class="clue-item ${found ? '' : 'undiscovered'}">
+                <div class="clue-title">${found ? clue.title : '???'}</div>
+                <div class="clue-desc">${found ? clue.desc : '尚未发现这条线索。继续探索庄园与角色互动吧。'}</div>
+                ${found ? `<div class="clue-source">来源：${clue.source}</div>` : ''}
+            </div>
+        `;
+    }).join('');
+    el.innerHTML = `<div class="panel"><div class="panel-title">🔍 已收集线索（${gameData.discoveredClues.length} / ${gameData.allClues.length}）</div><div class="clue-list">${items}</div></div>`;
+}
+
+function renderEndings() {
+    const el = document.getElementById('endings');
+    const cards = gameData.allEndings.map(e => `
+        <div class="ending-card ${e.unlocked ? 'unlocked' : 'locked'}">
+            <div class="ending-status ${e.unlocked ? 'status-unlocked' : 'status-locked'}">${e.unlocked ? '已解锁' : '未解锁'}</div>
+            <div class="ending-title">${endingDescEmoji(e.id)} ${e.title}</div>
+            <div class="ending-desc">${e.unlocked ? e.desc : '达成特定条件后解锁。'}</div>
+            <div class="ending-condition">${e.unlocked ? '已达成' : '条件：' + simplifyCondition(e.condition)}</div>
+        </div>
+    `).join('');
+    el.innerHTML = `<div class="panel"><div class="panel-title">🌙 结局图鉴（${gameData.unlockedEndings.length} / ${gameData.allEndings.length}）</div><div class="ending-list">${cards}</div></div>`;
+}
+
+function simplifyCondition(c) {
+    return c.replace(/characters\.(\w+)\.affection/g, (m, k) => gameData.characters[k].name + '好感')
+            .replace(/characters\.(\w+)\.trust/g, (m, k) => gameData.characters[k].name + '信任')
+            .replace(/escapeProgress/g, '逃跑进度')
+            .replace(/alertLevel/g, '警戒等级')
+            .replace(/discoveredClues\.length/g, '收集线索')
+            .replace(/flags\./g, '事件')
+            .replace(/>=/g, '≥').replace(/<=/g, '≤').replace(/&&/g, '且');
+}
+
+function renderSettings() {
+    const el = document.getElementById('settings');
+    el.innerHTML = `
+        <div class="panel">
+            <div class="panel-title">⚙️ AI 与存档设置</div>
+            <div class="settings-group">
+                <label>DeepSeek API Key</label>
+                <input type="password" id="api-key" value="${gameData.apiKey}" placeholder="sk-...">
+            </div>
+            <div class="settings-group">
+                <label>模型选择</label>
+                <select id="model-select">
+                    <option value="deepseek-chat" ${gameData.model === 'deepseek-chat' ? 'selected' : ''}>deepseek-chat</option>
+                    <option value="deepseek-reasoner" ${gameData.model === 'deepseek-reasoner' ? 'selected' : ''}>deepseek-reasoner</option>
+                </select>
+            </div>
+            <div class="control-row">
+                <button class="action" onclick="toggleAIMode()">${gameData.aiMode ? '关闭 AI 模式' : '开启 AI 模式'}</button>
+                <button class="action secondary" onclick="saveGame()">💾 存档</button>
+                <button class="action secondary" onclick="loadGame()">📂 读档</button>
+                <button class="action danger" onclick="resetGame()">🗑️ 重置</button>
+            </div>
+            <p class="hint-text">AI 模式开启后，剧情可由 DeepSeek 大模型实时生成。未配置 API Key 时，将自动使用本地剧情。</p>
+        </div>
+        <div class="panel">
+            <div class="panel-title">📜 系统日志</div>
+            <div class="log" id="system-log"></div>
+        </div>
+    `;
+    renderLog();
+}
+
+function renderLog() {
+    const log = document.getElementById('system-log');
+    if (!log) return;
+    log.innerHTML = (gameData.systemLog || []).map(l => {
+        const cls = l.type === 'error' ? 'error' : l.type === 'success' ? 'success' : l.type === 'ai' ? 'ai' : '';
+        return `<div class="log-entry ${cls}">[${l.time}] ${l.msg}</div>`;
+    }).join('');
+    log.scrollTop = log.scrollHeight;
+}
+
+// ============================================================
+//  存档 / 读档 / 重置
+// ============================================================
+const STORAGE_KEY = 'cage-rose-save';
+const DATA_VERSION = 1;
+
+function saveGame() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(gameData));
+        addLog('💾 游戏已存档', 'success');
+    } catch (e) { addLog('存档失败：' + e.message, 'error'); }
+}
+
+function loadGame() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) { alert('没有找到存档'); return; }
+        gameData = ensureCompatibility(JSON.parse(saved));
+        addLog('📂 存档已加载', 'success');
+        renderAll();
+        const scene = SCENES[gameData.currentScene];
+        currentChoices = scene ? scene.choices : [];
+        renderChoices();
+    } catch (e) { alert('读档失败：' + e.message); }
+}
+
+function ensureCompatibility(data) {
+    const base = clone(DEFAULT_DATA);
+    // 递归浅合并，保留数组用默认值兜底
+    const merged = deepMerge(base, data);
+    merged.allClues = base.allClues;
+    merged.allEndings = base.allEndings.map(e => {
+        const saved = (data.allEndings || []).find(x => x.id === e.id);
+        return saved ? { ...e, ...saved } : e;
+    });
+    if (!Array.isArray(merged.discoveredClues)) merged.discoveredClues = [];
+    if (!Array.isArray(merged.unlockedEndings)) merged.unlockedEndings = [];
+    if (!Array.isArray(merged.storyLog)) merged.storyLog = [];
+    if (!Array.isArray(merged.customHistory)) merged.customHistory = [];
+    if (!Array.isArray(merged.systemLog)) merged.systemLog = [];
+    return merged;
+}
+
+function deepMerge(base, override) {
+    if (override === null) return base;
+    if (Array.isArray(base) && Array.isArray(override)) return override;
+    if (typeof base === 'object' && typeof override === 'object') {
+        const res = { ...base };
+        for (const k of Object.keys(override)) {
+            res[k] = deepMerge(base[k], override[k]);
+        }
+        return res;
+    }
+    return override;
+}
+
+// ============================================================
+//  标签页切换
+// ============================================================
+document.getElementById('tab-bar').addEventListener('click', e => {
+    if (!e.target.classList.contains('tab')) return;
+    const tab = e.target.dataset.tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    document.getElementById(tab).classList.add('active');
+    if (tab === 'story') renderStory();
+    if (tab === 'characters') renderCharacters();
+    if (tab === 'clues') renderClues();
+    if (tab === 'endings') renderEndings();
+    if (tab === 'settings') renderSettings();
+});
+
+// ============================================================
+//  剧情推进
+// ============================================================
+function advanceScene(sceneId) {
+    if (ENDING_SCENE_MAP[sceneId]) {
+        triggerEnding(ENDING_SCENE_MAP[sceneId]);
+        return;
+    }
+    
+    gameData.currentScene = sceneId;
+    const scene = SCENES[sceneId];
+    if (!scene) {
+        addLog('场景未找到：' + sceneId, 'error');
+        return;
+    }
+    
+    for (const p of scene.text) {
+        gameData.storyLog.push({ ...p, ai: false });
+    }
+    currentChoices = scene.choices;
+    
+    updateClues();
+    renderStory();
+    saveGame();
+    if (checkEndings()) return;
+}
+
+function choose(index) {
+    const choice = currentChoices[index];
+    if (!choice) return;
+    applyEffects(choice.effects || {});
+    advanceTime(choice.advanceTime || 1);
+    if (choice.scene) advanceScene(choice.scene);
+    renderAll();
+}
+
+function applyEffects(effects) {
+    if (effects.characters) {
+        for (const [char, deltas] of Object.entries(effects.characters)) {
+            if (!gameData.characters[char]) continue;
+            for (const [stat, delta] of Object.entries(deltas)) {
+                if (gameData.characters[char][stat] !== undefined) {
+                    gameData.characters[char][stat] = clamp(gameData.characters[char][stat] + delta, 0, 100);
+                }
+            }
+        }
+    }
+    if (effects.escapeProgress) gameData.escapeProgress = clamp(gameData.escapeProgress + effects.escapeProgress, 0, 100);
+    if (effects.alertLevel) gameData.alertLevel = clamp(gameData.alertLevel + effects.alertLevel, 0, 100);
+    if (effects.flags) {
+        for (const [k, v] of Object.entries(effects.flags)) gameData.flags[k] = v;
+    }
+}
+
+function advanceTime(hours) {
+    gameData.hour += hours;
+    while (gameData.hour >= 24) {
+        gameData.hour -= 24;
+        gameData.day++;
+    }
+}
+
+// ============================================================
+//  AI 模式（DeepSeek）
+// ============================================================
+function toggleAIMode() {
+    const key = document.getElementById('api-key').value.trim();
+    const model = document.getElementById('model-select').value;
+    gameData.apiKey = key;
+    gameData.model = model;
+    if (!gameData.aiMode && !key) {
+        alert('请先填写 DeepSeek API Key');
+        return;
+    }
+    gameData.aiMode = !gameData.aiMode;
+    addLog(gameData.aiMode ? '🤖 AI 模式已开启' : '📖 已切换到本地剧情模式', 'ai');
+    renderStory();
+    saveGame();
+}
+
+async function submitCustomAction() {
+    const input = document.getElementById('custom-action');
+    const action = input.value.trim();
+    if (!action) return;
+    input.value = '';
+    
+    gameData.storyLog.push({ type: 'narration', content: `【你的行动】${action}`, ai: true });
+    renderStoryLog();
+    
+    if (gameData.aiMode && gameData.apiKey) {
+        await runAIStory(action);
+    } else {
+        // 本地模拟：根据关键词给出简短反应
+        runLocalReaction(action);
+    }
+    renderAll();
+}
+
+function runLocalReaction(action) {
+    const lowered = action.toLowerCase();
+    let response = '你尝试这样做，但周围似乎没有什么变化。';
+    let effects = {};
+    
+    if (lowered.includes('逃') || lowered.includes('跑') || lowered.includes('窗')) {
+        response = '你寻找逃跑的机会，但庄园的安保比你想象的严密。不过你注意到一些之前忽略的细节。';
+        effects = { escapeProgress: 5, alertLevel: 5 };
+    } else if (lowered.includes('沈墨') || lowered.includes('墨')) {
+        response = '你提到沈墨时，空气中仿佛有什么东西凝固了一瞬。';
+        effects = { characters: { shenmo: { affection: 5 } } };
+    } else if (lowered.includes('顾') || lowered.includes('夜辰')) {
+        response = '顾夜辰如果听到你的名字从他唇间说出，大概会笑得很开心。';
+        effects = { characters: { guyechen: { affection: 5 } } };
+    } else if (lowered.includes('陆骁') || lowered.includes('骁')) {
+        response = '陆骁在走廊尽头看了你一眼，什么也没说。';
+        effects = { characters: { luxiao: { affection: 3 } } };
+    } else if (lowered.includes('白澈') || lowered.includes('澈')) {
+        response = '白澈轻轻叹了口气，像是在担心你。';
+        effects = { characters: { baiche: { affection: 5 } } };
+    } else if (lowered.includes('钥匙') || lowered.includes('保险柜') || lowered.includes('书房')) {
+        response = '你回忆起关于万能钥匙和保险柜的线索。';
+        effects = { flags: { saw_keys: true }, escapeProgress: 5 };
+    } else if (lowered.includes('酒窖') || lowered.includes('密道')) {
+        response = '酒窖深处似乎有什么在等待着你。';
+        effects = { flags: { explored_cellar: true }, escapeProgress: 10 };
+    }
+    
+    applyEffects(effects);
+    gameData.storyLog.push({ type: 'narration', content: response, ai: true });
+    advanceTime(1);
+    updateClues();
+    checkEndings();
+}
+
+async function runAIStory(action) {
+    const btn = document.querySelector('#custom-action-row button');
+    if (btn) { btn.disabled = true; btn.textContent = 'AI 生成中...'; }
+    addLog('🤖 请求 DeepSeek 生成剧情...', 'ai');
+    
+    const state = buildStateSummary();
+    const prompt = buildAIPrompt(action, state);
+    
+    try {
+        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${gameData.apiKey}`
+            },
+            body: JSON.stringify({
+                model: gameData.model,
+                messages: [
+                    { role: 'system', content: buildSystemPrompt() },
+                    { role: 'user', content: prompt }
+                ],
+                temperature: 0.85,
+                max_tokens: 2000
+            })
+        });
+        
+        if (!response.ok) {
+            const err = await response.text();
+            throw new Error(`API ${response.status}: ${err}`);
+        }
+        
+        const data = await response.json();
+        const raw = data.choices[0].message.content;
+        const jsonStr = extractJSON(raw);
+        let result;
+        try { result = JSON.parse(jsonStr); }
+        catch (e) {
+            addLog('AI 返回格式异常，尝试按文本解析', 'error');
+            result = { narrative: raw, location: gameData.location, hourAdvance: 1, effects: {}, choices: [] };
+        }
+        
+        // 应用 AI 返回的效果
+        if (result.effects) applyEffects(result.effects);
+        if (result.hourAdvance) advanceTime(result.hourAdvance);
+        if (result.location) gameData.location = result.location;
+        
+        // 加入剧情
+        if (result.narrative) {
+            gameData.storyLog.push({ type: 'narration', content: result.narrative, ai: true });
+        }
+        if (result.dialogue) {
+            for (const d of result.dialogue) {
+                gameData.storyLog.push({ type: 'dialogue', speaker: d.speaker, content: d.content, ai: true });
+            }
+        }
+        
+        // 更新自定义选项
+        if (result.choices && result.choices.length > 0) {
+            currentChoices = result.choices.map(c => ({
+                text: c.text,
+                type: c.type || 'investigate',
+                scene: c.scene || null,
+                effects: c.effects || {},
+                note: c.note || 'AI生成',
+                advanceTime: c.advanceTime || 1,
+                ai: true
+            }));
+        } else {
+            currentChoices = [
+                { text: '继续观察当前处境', type: 'investigate', scene: null, effects: {}, advanceTime: 1 },
+                { text: '尝试寻找逃脱机会', type: 'escape', scene: null, effects: { escapeProgress: 5, alertLevel: 5 }, advanceTime: 1 },
+                { text: '与在场的人交谈', type: 'love', scene: null, effects: { characters: { [getMostLoved() || 'shenmo']: { affection: 5 } } }, advanceTime: 1 }
+            ];
+        }
+        
+        // 保存 AI 剧情摘要
+        gameData.customHistory.push({ action, summary: result.narrative ? result.narrative.substring(0, 200) : '' });
+        if (gameData.customHistory.length > 10) gameData.customHistory.shift();
+        
+        addLog('✅ AI 剧情生成完成', 'success');
+        updateClues();
+        checkEndings();
+        renderStory();
+        saveGame();
+    } catch (error) {
+        addLog('❌ AI 生成失败：' + error.message, 'error');
+        addLog('已回退到本地模拟', 'error');
+        runLocalReaction(action);
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '行动'; }
+    }
+}
+
+function buildSystemPrompt() {
+    return `你是一款乙女文字冒险游戏的 AI 叙事引擎。游戏背景：女主被四名男性角色绑架到一座偏远庄园，她需要想办法逃脱，也可以攻略其中任何一人，触发不同结局。
+
+角色：
+- 沈墨：庄园主人，冷静、控制欲强、有心理创伤（妹妹失踪）。
+- 顾夜辰：谈判专家，风流、危险、擅长蛊惑人心。
+- 陆骁：安保主管，沉默的前特种兵，内心有愧疚。
+- 白澈：随行医生，年轻温和，最易动摇。
+
+规则：
+1. 文风：哥特浪漫、悬疑、带点病态美感。中文叙述，第二人称或第三人称（以女主视角）。
+2. 保持角色性格一致性。
+3. 情节可以包含情感张力、暗示、轻微暧昧，但禁止色情或过度暴力。
+4. 返回严格 JSON，包含：narrative（剧情段落，200-400字）、dialogue（可选，对话数组）、location（可选，新地点）、hourAdvance（时间推进小时数）、effects（对角色好感/恐惧/信任、escapeProgress、alertLevel的影响，参考 applyEffects 格式）、choices（3个选项，每个含 text/type/.effects/note）。
+5. 如果用户行动会导致某个结局，在 effects 中设置对应 flags，如 surrendered_to_shenmo、left_with_yechen、luxiao_helped_escape、baiche_called_police、submitted_evidence、in_tunnel。`;
+}
+
+function buildAIPrompt(action, state) {
+    const history = gameData.customHistory.map(h => `- 行动：${h.action}\n  摘要：${h.summary}`).join('\n');
+    return `当前游戏状态：
+${JSON.stringify(state, null, 2)}
+
+最近剧情摘要：
+${history || '无'}
+
+玩家输入的自定义行动：
+"""${action}"""
+
+请根据当前状态、角色关系和玩家行动，生成下一段剧情。必须返回 JSON 格式。`;
+}
+
+function buildStateSummary() {
+    const chars = {};
+    for (const [k, c] of Object.entries(gameData.characters)) {
+        chars[k] = { name: c.name, affection: c.affection, fear: c.fear, trust: c.trust };
+    }
+    return {
+        day: gameData.day,
+        hour: gameData.hour,
+        location: gameData.location,
+        alertLevel: gameData.alertLevel,
+        escapeProgress: gameData.escapeProgress,
+        discoveredClues: gameData.discoveredClues,
+        flags: gameData.flags,
+        characters: chars
+    };
+}
+
+// ============================================================
+//  日志
+// ============================================================
+function addLog(msg, type = 'info') {
+    if (!gameData.systemLog) gameData.systemLog = [];
+    const now = timeString();
+    gameData.systemLog.push({ time: now, msg, type });
+    const logEl = document.getElementById('system-log');
+    if (logEl) {
+        const cls = type === 'error' ? 'error' : type === 'success' ? 'success' : type === 'ai' ? 'ai' : '';
+        logEl.innerHTML += `<div class="log-entry ${cls}">[${now}] ${msg}</div>`;
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+}
+
+// ============================================================
+//  初始化
+// ============================================================
+(function init() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        try {
+            const raw = JSON.parse(saved);
+            if (!raw._version || raw._version < DATA_VERSION) {
+                localStorage.removeItem(STORAGE_KEY);
+                gameData = clone(DEFAULT_DATA);
+            } else {
+                gameData = ensureCompatibility(raw);
+            }
+        } catch (e) {
+            gameData = clone(DEFAULT_DATA);
+        }
+    } else {
+        gameData = clone(DEFAULT_DATA);
+    }
+    renderAll();
+    if (gameData.storyLog.length === 0) {
+        advanceScene('prologue');
+    } else {
+        const scene = SCENES[gameData.currentScene];
+        currentChoices = scene ? scene.choices : [];
+        renderChoices();
+    }
+})();
+</script>
+</body>
+</html>
