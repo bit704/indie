@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中华帝国推演游戏 ⚔️</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0; min-height: 100vh; padding: 20px;
+        }
+        .container {
+            max-width: 1400px; margin: 0 auto;
+            background: rgba(255,255,255,0.05); border-radius: 15px; padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        h1 { text-align: center; color: #ffd700; font-size: 2.5em; margin-bottom: 5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .subtitle { text-align: center; color: #b0b0b0; margin-bottom: 25px; font-size: 1.2em; }
+        .sword-divider { text-align: center; margin: 8px 0 15px 0; color: #ffd700; font-size: 1.3em; letter-spacing: 6px; opacity: 0.7; }
+        .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 25px; border-bottom: 2px solid #333; padding-bottom: 12px; }
+        .tab { padding: 10px 20px; background: rgba(255,255,255,0.1); border: none; border-radius: 8px 8px 0 0; color: #e0e0e0; cursor: pointer; transition: all 0.3s; font-size: 0.95em; }
+        .tab:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        .tab.active { background: #ffd700; color: #1a1a2e; font-weight: bold; }
+        .content { display: none; animation: fadeIn 0.5s; }
+        .content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9em; }
+        th { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: bold; position: sticky; top: 0; }
+        tr:hover { background: rgba(255,255,255,0.05); }
+        .section { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 18px; margin: 15px 0; border-left: 4px solid #ffd700; }
+        .section h2 { color: #ffd700; margin-bottom: 12px; font-size: 1.4em; }
+        .section h3 { color: #ffd700; margin-top: 15px; margin-bottom: 8px; font-size: 1.1em; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 15px 0; }
+        .stat-card { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 15px; text-align: center; transition: transform 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.12); }
+        .stat-value { font-size: 1.8em; color: #ffd700; font-weight: bold; margin: 8px 0; }
+        .stat-label { color: #b0b0b0; font-size: 0.85em; }
+        .progress-bar { width: 100%; height: 22px; background: rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; margin: 8px 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #ffd700, #ffed4e); display: flex; align-items: center; justify-content: center; color: #1a1a2e; font-weight: bold; font-size: 0.85em; transition: width 0.5s; }
+        button { padding: 10px 20px; background: linear-gradient(135deg, #ffd700, #ffed4e); border: none; border-radius: 8px; color: #1a1a2e; font-weight: bold; cursor: pointer; transition: all 0.3s; font-size: 0.95em; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,215,0,0.4); }
+        button:disabled { background: #666; color: #999; cursor: not-allowed; transform: none; }
+        button.danger { background: linear-gradient(135deg, #f44336, #e57373); }
+        button.secondary { background: rgba(255,255,255,0.2); color: #e0e0e0; }
+        .control-panel { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 20px; margin: 15px 0; }
+        input, select, textarea { padding: 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; background: rgba(255,255,255,0.1); color: #e0e0e0; font-size: 0.95em; margin: 5px; }
+        textarea { width: 100%; min-height: 100px; resize: vertical; }
+        .log { background: rgba(0,0,0,0.3); border-radius: 5px; padding: 12px; margin: 10px 0; max-height: 350px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 0.85em; }
+        .log-entry { margin: 4px 0; padding: 4px 8px; border-left: 3px solid #ffd700; }
+        .log-entry.error { border-left-color: #f44336; }
+        .log-entry.success { border-left-color: #4caf50; }
+        .timestamp { color: #888; font-size: 0.8em; }
+        .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+        .dot-active { background: #4caf50; }
+        .dot-building { background: #ff9800; }
+        .dot-planned { background: #2196f3; }
+        ul.info-list { margin-left: 20px; line-height: 1.8; }
+        .change-highlight { color: #4caf50; font-weight: bold; }
+        .change-negative { color: #f44336; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🏛️ 中华帝国推演 ⚔️</h1>
+    <div class="sword-divider">⚔️ ⚜️ ⚔️ ⚜️ ⚔️</div>
+    <div class="subtitle" id="subtitle-bar">架空历史 — 1934年3月15日</div>
+
+    <div class="tabs" id="tab-bar">
+        <button class="tab active" data-tab="overview">总览</button>
+        <button class="tab" data-tab="government">宪政体制</button>
+        <button class="tab" data-tab="internal">内政建设</button>
+        <button class="tab" data-tab="army">陆军</button>
+        <button class="tab" data-tab="navy">海军</button>
+        <button class="tab" data-tab="finance">财政</button>
+        <button class="tab" data-tab="protectorate">保护国</button>
+        <button class="tab" data-tab="world">世界各国</button>
+        <button class="tab" data-tab="projects">未完成事项</button>
+        <button class="tab" data-tab="simulation">推演控制台</button>
+    </div>
+
+    <!-- 所有页面内容由JS动态渲染，HTML只留容器 -->
+    <div id="page-overview" class="content active"></div>
+    <div id="page-government" class="content"></div>
+    <div id="page-internal" class="content"></div>
+    <div id="page-army" class="content"></div>
+    <div id="page-navy" class="content"></div>
+    <div id="page-finance" class="content"></div>
+    <div id="page-protectorate" class="content"></div>
+    <div id="page-world" class="content"></div>
+    <div id="page-projects" class="content"></div>
+    <div id="page-simulation" class="content"></div>
+</div>
+
+<script>
+// ============================================================
+//  游戏核心数据 — 所有页面从这里读取，推演后更新这里
+// ============================================================
+const DEFAULT_DATA = {
+    _version: 2,
+    date: '1934-03-15',
+    period: 'peace', // 'peace' 或 'war'
+
+    government: [
+        { position: '大总统', name: '原皇帝陛下', duty: '统率全国陆海空军，拥有外交最终决定权' },
+        { position: '总理', name: '孙中山', duty: '负责日常行政事务，向议会负责' },
+        { position: '大法官', name: '康有为', duty: '主持最高法院，独立审判' },
+        { position: '大检察官', name: '梁启超', duty: '主持最高检察院，独立检察' },
+        { position: '大外交官', name: '顾维钧', duty: '主持外交部' }
+    ],
+
+    internal: {
+        railways: [
+            { name: '沪渝铁路', status: 'completed', detail: '已全线通车', budget: null, progress: 1.0 },
+            { name: '西南铁路网', status: 'building', detail: '兰州→成都→昆明干线、西安→成都联络线、贵阳→昆明支线，总预算1.2亿两', budget: 120000000, progress: 0.7 },
+            { name: '西安至成都联络线', status: 'completed', detail: '本月已通车', budget: null, progress: 1.0 }
+        ],
+        highways: [],
+        steel: { annual: 5900000, worldRank: 3 },
+        oil: { annual: 20000, field: '江汉油田', savings: '月均节省维护费约7万两' },
+        power: { households: 1865000 },
+        automobiles: { annual: 20000, producers: '含天津国有、上海南洋民营、广州南方民营、福特合资' },
+        taiwan: { status: 'province', governor: '林火旺', annualTax: 1200000 }
+    },
+
+    army: {
+        totalTroops: 490000,
+        totalPower: 4336000,
+        armoredVehicles: 1340,
+        heavyTanks: 80,
+        airForce: { planes: 126, albatross: 28, engine: '350马力发动机全部换发完成' },
+        units: [
+            { name: '近卫装甲军', commander: '聂士成', location: '北京/太原', equipment: '装甲+英械+蟠龙+重坦', troops: 28000, firepower: 3.22, morale: 2.00, training: 2.62, power: 242000 },
+            { name: '第一装甲军', commander: '黄兴', location: '长白省', equipment: '全装甲+重坦', troops: 30140, firepower: 3.98, morale: 2.00, training: 2.84, power: 474000 },
+            { name: '亮剑方面军', commander: '朱玉阶', location: '北京西郊', equipment: '蟠龙+重型坦克+装甲车', troops: 52000, firepower: 4.08, morale: 2.22, training: 3.04, power: 550000 },
+            { name: '第二军', commander: '冯国璋', location: '青岛', equipment: '全蟠龙甲型', troops: 30000, firepower: 2.48, morale: 2.00, training: 2.45, power: 304000 },
+            { name: '第三军', commander: '冯玉祥', location: '保定', equipment: '蟠龙甲型+英械', troops: 30000, firepower: 2.45, morale: 2.00, training: 2.45, power: 290000 },
+            { name: '第四军', commander: '黎元洪', location: '长春', equipment: '英械+蟠龙甲型', troops: 29000, firepower: 2.31, morale: 2.00, training: 2.42, power: 190000 },
+            { name: '第五军', commander: '刘永福', location: '松原', equipment: '全蟠龙甲型', troops: 29500, firepower: 2.20, morale: 2.00, training: 2.36, power: 210000 },
+            { name: '第六军', commander: '张勋', location: '武昌', equipment: '蟠龙+美械+德械', troops: 30500, firepower: 2.28, morale: 2.00, training: 2.64, power: 288000 },
+            { name: '第七军', commander: '叶挺', location: '河内', equipment: '德械+蟠龙甲型', troops: 28775, firepower: 2.27, morale: 2.00, training: 2.16, power: 224000 },
+            { name: '第八军', commander: '杨善德', location: '广州', equipment: '全蟠龙甲型', troops: 29420, firepower: 2.20, morale: 2.00, training: 2.47, power: 224000 },
+            { name: '第九军', commander: '何柱国', location: '哈尔滨', equipment: '德械+骑兵+蟠龙', troops: 25350, firepower: 2.13, morale: 1.99, training: 2.18, power: 184000 },
+            { name: '第十军', commander: '张治中', location: '成都', equipment: '全英装师', troops: 29310, firepower: 2.40, morale: 2.00, training: 2.04, power: 268000 },
+            { name: '第十一军', commander: '刘存厚', location: '伊犁', equipment: '全蟠龙甲型', troops: 28500, firepower: 2.21, morale: 2.00, training: 2.04, power: 240000 },
+            { name: '第十二军', commander: '李景林', location: '哈密', equipment: '蟠龙+美械', troops: 27500, firepower: 2.15, morale: 1.98, training: 2.04, power: 224000 },
+            { name: '左公守备军', commander: '马步芳', location: '咸海省', equipment: '全蟠龙甲型', troops: 30500, firepower: 1.96, morale: 1.98, training: 2.08, power: 120000 }
+        ]
+    },
+
+    navy: {
+        totalTonnage: 850000,
+        battleships: 18,
+        cruisers: 13,
+        destroyers: 22,
+        submarines: 34,
+        summary: '亚洲第一、世界前三',
+        fleets: [
+            {
+                name: '近卫海军',
+                flagship: '大秦舰',
+                ships: [
+                    { name: '大秦舰', type: '超级战列舰', tonnage: 72000, mainGun: '8门20英寸(508mm)', secondaryGun: '12门6英寸(152mm)+8门16英寸(406mm)', armor: '16英寸(406mm)水线', status: '旗舰，1934年2月入列', builder: '江南造船厂' },
+                    { name: '大明舰', type: '战列舰', tonnage: 45000, mainGun: '8门16英寸(406mm)', secondaryGun: '12门6英寸(152mm)', armor: '14英寸(356mm)水线', status: '在役', builder: '江南造船厂' },
+                    { name: '镇吴舰', type: '战列舰', tonnage: 30000, mainGun: '8门12英寸(305mm)', secondaryGun: '12门6英寸(152mm)', armor: '12英寸(305mm)水线', status: '在役', builder: '江南造船厂' },
+                    { name: '靖吴舰', type: '战列舰', tonnage: 30000, mainGun: '8门12英寸(305mm)', secondaryGun: '12门6英寸(152mm)', armor: '12英寸(305mm)水线', status: '在役', builder: '江汉造船厂' }
+                ],
+                submarines: 10,
+                cruisers: 0,
+                destroyers: 0
+            },
+            {
+                name: '北海舰队',
+                flagship: '大唐舰',
+                ships: [
+                    { name: '大唐舰', type: '战列舰', tonnage: 28000, mainGun: '8门12英寸(305mm)', secondaryGun: '12门150mm', armor: '14英寸(356mm)水线', status: '旗舰', builder: '德国伏尔铿' },
+                    { name: '华英舰', type: '战列舰', tonnage: 30000, mainGun: '8门12英寸(305mm)', secondaryGun: '12门150mm', armor: '12英寸(305mm)水线', status: '在役', builder: '英国朴茨茅斯' },
+                    { name: '华美舰', type: '战列舰', tonnage: 30000, mainGun: '8门12英寸(305mm)', secondaryGun: '12门150mm', armor: '12英寸(305mm)水线', status: '在役', builder: '美国纽约' }
+                ],
+                submarines: 8,
+                cruisers: 5,
+                destroyers: 8
+            },
+            {
+                name: '东海舰队',
+                flagship: '大清舰',
+                ships: [
+                    { name: '大清舰', type: '战列舰', tonnage: 32000, mainGun: '8门12英寸(305mm)', secondaryGun: '14门150mm', armor: '14英寸(356mm)水线', status: '旗舰', builder: '江南造船厂' },
+                    { name: '镇洋舰', type: '战列舰', tonnage: 30000, mainGun: '8门12英寸(305mm)', secondaryGun: '12门150mm', armor: '12英寸(305mm)水线', status: '在役', builder: '江南造船厂' },
+                    { name: '定海舰', type: '战列舰', tonnage: 30000, mainGun: '8门12英寸(305mm)', secondaryGun: '12门150mm', armor: '12英寸(305mm)水线', status: '在役', builder: '江汉造船厂' },
+                    { name: '镇东舰', type: '战列舰', tonnage: 28000, mainGun: '10门14英寸(356mm)', secondaryGun: '12门150mm', armor: '10英寸(254mm)水线', status: '在役', builder: '英国朴茨茅斯' },
+                    { name: '镇北舰', type: '战列舰', tonnage: 27000, mainGun: '8门12英寸(305mm)', secondaryGun: '12门150mm', armor: '11.5英寸(292mm)水线', status: '在役', builder: '德国伏尔铿' }
+                ],
+                submarines: 8,
+                cruisers: 4,
+                destroyers: 6
+            },
+            {
+                name: '南海舰队',
+                flagship: '大宋舰',
+                ships: [
+                    { name: '大宋舰', type: '战列舰', tonnage: 32000, mainGun: '8门14英寸(356mm)', secondaryGun: '12门6英寸(152mm)', armor: '14英寸(356mm)水线', status: '旗舰', builder: '江南造船厂' },
+                    { name: '镇远二号', type: '战列舰', tonnage: 30000, mainGun: '8门12英寸(305mm)', secondaryGun: '12门6英寸(152mm)', armor: '12英寸(305mm)水线', status: '在役', builder: '江南造船厂' },
+                    { name: '镇南舰', type: '战列舰', tonnage: 30000, mainGun: '8门12英寸(305mm)', secondaryGun: '12门6英寸(152mm)', armor: '12英寸(305mm)水线', status: '在役', builder: '江南造船厂' },
+                    { name: '镇海舰', type: '战列舰', tonnage: 30000, mainGun: '8门12英寸(305mm)', secondaryGun: '12门6英寸(152mm)', armor: '12英寸(305mm)水线', status: '在役', builder: '江汉造船厂' },
+                    { name: '汉武舰', type: '战列舰', tonnage: 45000, mainGun: '8门16英寸(406mm)', secondaryGun: '12门6英寸(152mm)', armor: '14英寸(356mm)水线', status: '在役', builder: '江南造船厂' },
+                    { name: '汉文舰', type: '战列舰', tonnage: 45000, mainGun: '8门16英寸(406mm)', secondaryGun: '12门6英寸(152mm)', armor: '14英寸(356mm)水线', status: '在役', builder: '江汉造船厂' }
+                ],
+                submarines: 8,
+                cruisers: 4,
+                destroyers: 8
+            }
+        ],
+        antonFleet: [
+            { name: '定远', type: '铁甲战列舰', tonnage: 7335, mainGun: '4门305mm', status: '旗舰，1933年移交' },
+            { name: '镇远', type: '铁甲战列舰', tonnage: 7335, mainGun: '4门305mm', status: '在役' }
+        ],
+        building: [
+            { name: '大汉舰', type: '大秦舰姊妹舰', status: '规划中，暂未启动', expectedYear: '约4-5年' }
+        ]
+    },
+
+    finance: {
+        treasury: 50560000,
+        monthlyIncome: 26200000,
+        monthlyExpense: 14420000,
+        monthlySurplus: 11780000,
+        incomeDetails: [
+            { name: '税收', amount: 1500, unit: '万两/月', note: '常规税收' },
+            { name: '铁路运营', amount: 300, unit: '万两/月', note: '沪渝铁路等' },
+            { name: '外贸', amount: 400, unit: '万两/月', note: '钢铁出口等' },
+            { name: '煤矿与钨矿', amount: 200, unit: '万两/月', note: '矿产收入' },
+            { name: '关税', amount: 130, unit: '万两/月', note: '新加坡、巴拿马、绥西埠、惠远埠' },
+            { name: '保护费', amount: 86, unit: '万两/月', note: '按季度到账' },
+            { name: '台湾税收', amount: 10, unit: '万两/月', note: '月均' }
+        ],
+        expenseDetails: [
+            { name: '行政支出', amount: 500, unit: '万两/月', note: '日常行政' },
+            { name: '陆军维护', amount: 600, unit: '万两/月', note: '含装甲部队维护' },
+            { name: '海军维护', amount: 300, unit: '万两/月', note: '舰艇维护' },
+            { name: '工业建设', amount: 42, unit: '万两/月', note: '常规支出' }
+        ],
+        specialExpenses: []
+    },
+
+    protectorates: [
+        { name: '安东朝鲜', established: '兴华初年', leader: '高宗', fee: 24 },
+        { name: '安南越南', established: '1929年12月', leader: '阮爱国', fee: 60 },
+        { name: '缅甸', established: '1930年1月', leader: '巴莫博士', fee: 50 },
+        { name: '柬埔寨', established: '1930年1月', leader: '西索瓦·莫尼旺国王', fee: 30 },
+        { name: '老挝', established: '1930年1月', leader: '西萨旺·冯国王', fee: 20 },
+        { name: '华罗(暹罗)', established: '1930年2月', leader: '拉玛六世', fee: 40 },
+        { name: '马来亚', established: '1930年2月', leader: '苏丹代表', fee: 60 }
+    ],
+
+    world: [
+        { name: '德国', status: '稳固同盟', details: ['与中华帝国保持稳固同盟关系','经济重建中，中华继续提供粮食和工业原料','技术合作全面深化：5000吨级锻压机、柴油喷射系统、光学玻璃冶炼技术转让中','海军规模受限于《柏林和约》，约为英国的35%','与英国关系从敌对转为和平竞争，与法国关系逐步正常化'] },
+        { name: '英国', status: '和平竞争', details: ['欧洲大战终结，战后重建中','与日本防务合作持续，共同开发反坦克武器','在东南亚影响力大幅削弱，承认中华帝国在亚洲的领导地位','海军全球第一，但财政压力巨大','与德国关系从战争转为和平竞争'] },
+        { name: '日本', status: '友好但警惕', details: ['原敬内阁维持对华友好外交，但暗中加强军备','37毫米反坦克炮已进入小批量生产阶段，预计1934年列装','经济继续受益于对华贸易和中南半岛贸易','海军规模有限，无力与中华海军竞争','与英国防务合作加强，共同应对中华崛起'] },
+        { name: '美国', status: '中立友好', details: ['保持中立，加强太平洋军事存在','关岛海军航空站已完工，苏比克湾潜艇维修基地已完工','菲律宾驻军约1.5万人','经济实力世界第一，钢铁产量约2,500万吨','对中华帝国宪政改革表示赞赏，外交关系友好'] },
+        { name: '法国', status: '逐步正常化', details: ['欧洲大战终结，战后重建中','在东南亚影响力彻底丧失，承认中华帝国保护国体系','与德国关系逐步正常化'] },
+        { name: '俄国', status: '正常贸易', details: ['苏维埃政权忙于国内第二个五年计划','与中华帝国贸易正常，绥西埠和惠远埠月均贸易额稳定','在远东影响力微弱，默认中华帝国对兴安岭省的主权'] },
+        { name: '荷兰', status: '警惕无力', details: ['东印度群岛驻军约3.5万人','对中华帝国在东南亚的扩张保持警惕，但无力反制'] }
+    ],
+
+    projects: [
+        { name: '西南铁路网', start: '1932年6月', expectedEnd: '1934-1935年', remaining: '12-18个月', progress: 0.7, detail: '西安至成都联络线本月通车' },
+        { name: '蒸汽弹射器研发', start: '1931年3月', expectedEnd: '1937年', remaining: '约3年', progress: 0.5, detail: '试验舰改装预计1934年下半年完成' },
+        { name: '对德技术引进', start: '1933年1月', expectedEnd: '1934-1937年', remaining: '1-3年', progress: 0.3, detail: '三项技术同步消化中' },
+        { name: '反坦克威胁评估', start: '1933年9月', expectedEnd: '持续', remaining: '-', progress: 0.6, detail: '毛生主持，研究日本反坦克炮' },
+        { name: '大汉舰规划', start: '待启动', expectedEnd: '4-5年', remaining: '-', progress: 0, detail: '尚未启动' }
+    ],
+
+    simulationLog: [
+        { time: '1934-03-15 00:00', msg: '游戏初始化完成，中华帝国推演开始...', type: 'info' }
+    ]
+};
+
+// ============================================================
+//  gameData — 运行时数据，初始化时从DEFAULT_DATA或localStorage加载
+// ============================================================
+let gameData;
+
+// ============================================================
+//  工具函数
+// ============================================================
+
+// 从DeepSeek返回的文本中提取JSON（剥离markdown标记）
+function extractJSON(text) {
+    // 尝试剥离 ```json ... ``` 包裹
+    let match = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
+    if (match) return match[1].trim();
+    // 尝试直接找 JSON 对象（以 { 开头）
+    match = text.match(/\{[\s\S]*\}/);
+    if (match) return match[0].trim();
+    return text.trim();
+}
+
+// 更新游戏数据 — 核心函数，支持数组按name匹配更新+新增
+function applyUpdate(target, source) {
+    if (Array.isArray(source)) {
+        if (!Array.isArray(target)) {
+            // 目标不是数组，直接替换
+            return source;
+        }
+        // 数组：按 name 字段匹配，找不到则新增
+        const result = [...target];
+        for (const item of source) {
+            if (item && item.name !== undefined) {
+                const idx = result.findIndex(r => r.name === item.name);
+                if (idx >= 0) {
+                    // 找到同名条目 → 逐字段更新
+                    result[idx] = applyUpdate(result[idx], item);
+                } else {
+                    // 新条目 → 添加到数组
+                    result.push(item);
+                }
+            } else if (item && item.position !== undefined) {
+                const idx = result.findIndex(r => r.position === item.position);
+                if (idx >= 0) {
+                    result[idx] = applyUpdate(result[idx], item);
+                } else {
+                    result.push(item);
+                }
+            } else {
+                // 无 name 字段的数组条目，按索引覆盖
+                const idx = source.indexOf(item);
+                if (idx < result.length) {
+                    result[idx] = applyUpdate(result[idx], item);
+                } else {
+                    result.push(item);
+                }
+            }
+        }
+        return result;
+    }
+
+    if (source && typeof source === 'object' && !Array.isArray(source)) {
+        if (!target || typeof target !== 'object') {
+            return source; // 目标不存在或类型不同，直接替换
+        }
+        const result = { ...target };
+        for (const key of Object.keys(source)) {
+            if (source[key] === null) {
+                // null 表示删除该字段
+                delete result[key];
+            } else if (source[key] === 'DELETE_ITEM') {
+                // 特殊标记：从数组中删除某个条目（需配合name）
+                delete result[key];
+            } else {
+                result[key] = applyUpdate(result[key], source[key]);
+            }
+        }
+        return result;
+    }
+
+    // 基本类型（数字、字符串等）直接替换
+    return source;
+}
+
+// ============================================================
+//  页面渲染 — 所有页面从gameData动态生成
+// ============================================================
+
+function renderAllPages() {
+    renderOverview();
+    renderGovernment();
+    renderInternal();
+    renderArmy();
+    renderNavy();
+    renderFinance();
+    renderProtectorate();
+    renderWorld();
+    renderProjects();
+    renderSimulation();
+    updateSubtitle();
+}
+
+function updateSubtitle() {
+    document.getElementById('subtitle-bar').textContent = `架空历史 — ${gameData.date}`;
+}
+
+function renderOverview() {
+    const el = document.getElementById('page-overview');
+    el.innerHTML = `
+        <div class="stats-grid">
+            ${statCard('⚔️ 陆军总兵力', gameData.army.totalTroops.toLocaleString())}
+            ${statCard('🚢 海军总吨位', (gameData.navy.totalTonnage/10000).toFixed(0) + '万吨')}
+            ${statCard('💰 国库储备', (gameData.finance.treasury/10000).toFixed(0) + '万两')}
+            ${statCard('✨ 月均盈余', (gameData.finance.monthlySurplus/10000).toFixed(0) + '万两')}
+            ${statCard('🔥 粗钢年产量', gameData.internal.steel.annual/10000 + '万吨')}
+            ${statCard('🛡️ 保护国数量', gameData.protectorates.length + '国')}
+        </div>
+        <div class="section"><h2>⚔️ 快速访问</h2><p>使用上方标签页查看详细信息并进行推演操作</p></div>
+    `;
+}
+
+function renderGovernment() {
+    const el = document.getElementById('page-government');
+    el.innerHTML = `<div class="section"><h2>👑 宪政体制 🏛️</h2>
+        <table><tr><th>职位</th><th>姓名</th><th>职责</th></tr>
+        ${gameData.government.map(g => `<tr><td>${g.position}</td><td>${g.name}</td><td>${g.duty}</td></tr>`).join('')}
+        </table></div>`;
+}
+
+function renderInternal() {
+    const el = document.getElementById('page-internal');
+    const railwaysHtml = gameData.internal.railways.map(r => {
+        const dot = r.status === 'completed' ? 'dot-active' : r.status === 'building' ? 'dot-building' : 'dot-planned';
+        return `<tr><td>${r.name}</td><td><span class="status-dot ${dot}"></span>${r.status === 'completed' ? '已通车' : r.status === 'building' ? '建设中' : '规划中'}</td><td>${r.detail}</td></tr>`;
+    }).join('');
+
+    const highwaysHtml = gameData.internal.highways.length > 0
+        ? gameData.internal.highways.map(h => {
+            const dot = h.status === 'completed' ? 'dot-active' : 'dot-building';
+            return `<tr><td>${h.name}</td><td><span class="status-dot ${dot}"></span>${h.status === 'completed' ? '已通车' : '建设中'}</td><td>${h.detail || ''}</td></tr>`;
+        }).join('')
+        : '<tr><td colspan="3" style="text-align:center;color:#888;">暂无高速公路项目</td></tr>';
+
+    el.innerHTML = `
+        <div class="section"><h2>🚂 铁路建设</h2>
+            <table><tr><th>项目名称</th><th>状态</th><th>详情</th></tr>${railwaysHtml}</table></div>
+        <div class="section"><h2>🛣️ 高速公路</h2>
+            <table><tr><th>项目名称</th><th>状态</th><th>详情</th></tr>${highwaysHtml}</table></div>
+        <div class="section"><h2>🏭 工业产能</h2>
+            <div class="stats-grid">
+                ${statCard('🔥 粗钢年产量', gameData.internal.steel.annual/10000 + '万吨', '居世界前三')}
+                ${statCard('🛢️ 石油年产', gameData.internal.oil.annual.toLocaleString() + '吨', gameData.internal.oil.field)}
+                ${statCard('🚗 汽车年产能', gameData.internal.automobiles.annual.toLocaleString() + '辆', gameData.internal.automobiles.producers)}
+                ${statCard('⚡ 通电户数', gameData.internal.power.households.toLocaleString() + '户', '全国')}
+            </div></div>
+        <div class="section"><h2>🏝️ 台湾省</h2>
+            <p>已改制为台湾省，${gameData.internal.taiwan.governor}任省长</p>
+            <p>年税收约${gameData.internal.taiwan.annualTax/10000}万两</p></div>
+    `;
+}
+
+function renderArmy() {
+    const el = document.getElementById('page-army');
+    const unitsHtml = gameData.army.units.map(u => `<tr>
+        <td>${u.name}</td><td>${u.commander}</td><td>${u.location}</td><td>${u.equipment}</td>
+        <td>${u.troops.toLocaleString()}</td><td>${u.firepower.toFixed(2)}</td><td>${u.morale.toFixed(2)}</td>
+        <td>${u.training.toFixed(2)}</td><td>约${u.power.toLocaleString()}</td></tr>`).join('');
+
+    el.innerHTML = `
+        <div class="section"><h2>🪖 陆军总览</h2>
+            <div class="stats-grid">
+                ${statCard('⚔️ 总兵力', gameData.army.totalTroops.toLocaleString())}
+                ${statCard('💥 总战力', gameData.army.totalPower.toLocaleString())}
+                ${statCard('🦾 装甲战车', gameData.army.armoredVehicles.toLocaleString() + '辆')}
+                ${statCard('🎯 重型坦克', gameData.army.heavyTanks.toLocaleString() + '辆')}
+            </div></div>
+        <div class="section"><h2>📊 各军详情</h2>
+            <table><tr><th>军 🪖</th><th>军长</th><th>驻地 📍</th><th>装备 🗡️</th><th>总兵力</th><th>火力 🔥</th><th>士气 🎖️</th><th>训练 🏋️</th><th>战力 💥</th></tr>
+            ${unitsHtml}</table></div>
+        <div class="section"><h2>✈️ 空军 🦅</h2>
+            <p>飞机约${gameData.army.airForce.planes}架（含${gameData.army.airForce.albatross}架${gameData.army.airForce.type || '信天翁战斗轰炸两用机'}）</p>
+            <p>${gameData.army.airForce.engine}</p></div>
+    `;
+}
+
+function renderNavy() {
+    const el = document.getElementById('page-navy');
+    let fleetsHtml = '';
+    for (const f of gameData.navy.fleets) {
+        const shipsHtml = f.ships.map(s => `<tr>
+            <td>${s.name}</td><td>${s.type}</td><td>~${s.tonnage.toLocaleString()}</td>
+            <td>${s.mainGun}</td><td>${s.secondaryGun}</td><td>${s.armor}</td><td>${s.status}</td><td>${s.builder}</td></tr>`).join('');
+
+        fleetsHtml += `<div class="section"><h3>🚢 ${f.name}（旗舰：${f.flagship}）</h3>
+            <table><tr><th>舰名 🚢</th><th>舰型</th><th>排水量(吨)</th><th>主炮 💣</th><th>副炮</th><th>装甲 🛡️</th><th>状态</th><th>建造地</th></tr>
+            ${shipsHtml}</table>
+            <p>潜艇${f.submarines}艘 · 巡洋舰${f.cruisers}艘 · 驱逐舰${f.destroyers}艘</p></div>`;
+    }
+
+    const antonHtml = gameData.navy.antonFleet.map(s => `<tr>
+        <td>${s.name}</td><td>${s.type}</td><td>~${s.tonnage.toLocaleString()}</td><td>${s.mainGun}</td><td>${s.status}</td></tr>`).join('');
+
+    const buildingHtml = gameData.navy.building.map(s => `<tr>
+        <td>${s.name}</td><td>${s.type}</td><td>${s.status}</td><td>预计交付：${s.expectedYear}</td></tr>`).join('');
+
+    el.innerHTML = `
+        <div class="section"><h2>⚓ 海军总览</h2>
+            <div class="stats-grid">
+                ${statCard('🚢 战列舰', gameData.navy.battleships + '艘')}
+                ${statCard('🔱 巡洋舰', gameData.navy.cruisers + '艘')}
+                ${statCard('⚡ 驱逐舰', gameData.navy.destroyers + '艘')}
+                ${statCard('🫧 潜艇', gameData.navy.submarines + '艘')}
+                ${statCard('⚓ 总吨位', (gameData.navy.totalTonnage/10000).toFixed(0) + '万吨', gameData.navy.summary)}
+            </div></div>
+        ${fleetsHtml}
+        <div class="section"><h2>🛡️ 安东国第一舰队（被保护国）</h2>
+            <table><tr><th>舰名 🚢</th><th>舰型</th><th>排水量(吨)</th><th>主炮 💣</th><th>状态</th></tr>${antonHtml}</table></div>
+        <div class="section"><h2>🔨 在建/筹建</h2>
+            <table><tr><th>舰名</th><th>舰型</th><th>状态</th><th>预计交付</th></tr>${buildingHtml}</table></div>
+    `;
+}
+
+function renderFinance() {
+    const el = document.getElementById('page-finance');
+    const incomeHtml = gameData.finance.incomeDetails.map(i => `<tr><td>${i.name}</td><td>${i.amount} ${i.unit}</td><td>${i.note}</td></tr>`).join('');
+    const expenseHtml = gameData.finance.expenseDetails.map(e => `<tr><td>${e.name}</td><td>${e.amount} ${e.unit}</td><td>${e.note}</td></tr>`).join('');
+    const specialHtml = gameData.finance.specialExpenses.length > 0
+        ? gameData.finance.specialExpenses.map(s => `<tr><td>${s.name}</td><td>${s.amount} ${s.unit || '万两'}</td><td>${s.note}</td></tr>`).join('')
+        : '<tr><td colspan="3" style="text-align:center;color:#888;">暂无专项支出</td></tr>';
+
+    el.innerHTML = `
+        <div class="section"><h2>💰 财政状况 🏦</h2>
+            <div class="stats-grid">
+                ${statCard('💰 国库储备', (gameData.finance.treasury/10000).toFixed(0) + '万两')}
+                ${statCard('📈 月均收入', (gameData.finance.monthlyIncome/10000).toFixed(0) + '万两')}
+                ${statCard('📉 月均支出', (gameData.finance.monthlyExpense/10000).toFixed(0) + '万两')}
+                ${statCard('✨ 月均盈余', (gameData.finance.monthlySurplus/10000).toFixed(0) + '万两')}
+            </div></div>
+        <div class="section"><h2>📥 收入来源</h2>
+            <table><tr><th>项目</th><th>金额</th><th>备注</th></tr>${incomeHtml}</table></div>
+        <div class="section"><h2>📤 支出项目</h2>
+            <table><tr><th>项目</th><th>金额</th><th>备注</th></tr>${expenseHtml}</table></div>
+        <div class="section"><h2>📋 专项支出</h2>
+            <table><tr><th>项目</th><th>金额</th><th>备注</th></tr>${specialHtml}</table></div>
+    `;
+}
+
+function renderProtectorate() {
+    const el = document.getElementById('page-protectorate');
+    const totalFee = gameData.protectorates.reduce((s, p) => s + p.fee, 0);
+    const html = gameData.protectorates.map(p => `<tr><td>${p.name}</td><td>${p.established}</td><td>${p.leader}</td><td>约${p.fee}万两</td></tr>`).join('');
+
+    el.innerHTML = `<div class="section"><h2>🛡️ 保护国体系 🏯</h2>
+        <table><tr><th>国名</th><th>成立时间</th><th>首任领袖</th><th>年保护费（万两）</th></tr>${html}</table>
+        <p style="margin-top:12px;"><strong>合计：</strong>年保护费收入约${totalFee}万两</p>
+        <p><strong>注：</strong>新加坡为中华帝国直辖商埠，不列入保护国</p></div>`;
+}
+
+function renderWorld() {
+    const el = document.getElementById('page-world');
+    const html = gameData.world.map(w => `
+        <h3 style="color:#ffd700;margin-top:15px;">${w.name} ${worldEmoji(w.name)} <span style="color:#888;font-size:0.8em;">（${w.status}）</span></h3>
+        <ul class="info-list">${w.details.map(d => `<li>${d}</li>`).join('')}</ul>
+    `).join('');
+
+    el.innerHTML = `<div class="section"><h2>🌍 世界各国状况</h2>${html}</div>`;
+}
+
+function renderProjects() {
+    const el = document.getElementById('page-projects');
+    const html = gameData.projects.map(p => {
+        const pct = Math.round(p.progress * 100);
+        const bar = `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%">${pct}%</div></div>`;
+        return `<tr><td>${p.name}</td><td>${p.start}</td><td>${p.expectedEnd}</td><td>${p.remaining}</td><td>${pct}%</td><td>${bar}</td></tr>`;
+    }).join('');
+
+    // 已完成的项目（progress >= 1）单独展示
+    const completedHtml = gameData.projects.filter(p => p.progress >= 1).map(p =>
+        `<tr><td>${p.name}</td><td>${p.start}</td><td>${p.expectedEnd}</td><td style="color:#4caf50;">✅ 已完成</td><td>${p.detail || ''}</td></tr>`
+    ).join('');
+
+    const ongoingHtml = gameData.projects.filter(p => p.progress < 1).map(p => {
+        const pct = Math.round(p.progress * 100);
+        const bar = `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%">${pct}%</div></div>`;
+        return `<tr><td>${p.name}</td><td>${p.start}</td><td>${p.expectedEnd}</td><td>${p.remaining}</td><td>${pct}%</td><td>${bar}</td></tr>`;
+    }).join('');
+
+    el.innerHTML = `<div class="section"><h2>🔧 未完成事项进度表</h2>
+        ${ongoingHtml ? `<table><tr><th>事项</th><th>启动时间</th><th>预计完成</th><th>剩余时间</th><th>当前进度</th><th>进度条</th></tr>${ongoingHtml}</table>` : '<p style="color:#888;">暂无进行中的项目</p>'}
+        </div>
+        ${completedHtml ? `<div class="section"><h2>✅ 已完成事项</h2>
+        <table><tr><th>事项</th><th>启动时间</th><th>预计完成</th><th>状态</th><th>说明</th></tr>${completedHtml}</table></div>` : ''}
+    `;
+}
+
+function renderSimulation() {
+    const el = document.getElementById('page-simulation');
+    const logHtml = gameData.simulationLog.map(l => {
+        const cls = l.type === 'error' ? 'error' : l.type === 'success' ? 'success' : '';
+        return `<div class="log-entry ${cls}"><span class="timestamp">[${l.time}]</span> ${l.msg}</div>`;
+    }).join('');
+
+    el.innerHTML = `
+        <div class="control-panel">
+            <h2>🎮 推演控制台</h2>
+            <p>输入指令进行推演，系统将根据推演程序更新数据</p>
+            <div style="margin:15px 0;">
+                <label>推演周期：</label>
+                <select id="sim-period">
+                    <option value="half-month">每半月（战时）</option>
+                    <option value="three-months" selected>每三个月（和平）</option>
+                </select>
+            </div>
+            <div style="margin:15px 0;">
+                <label>陛下指令：</label>
+                <textarea id="imperial-decree" placeholder="输入您的指令，例如：修建南京至上海高速公路，拨款2000万两..."></textarea>
+            </div>
+            <div style="margin:10px 0;">
+                <button onclick="runSimulation()" id="simulate-btn">开始推演</button>
+                <button onclick="saveGame()" class="secondary">💾 存档</button>
+                <button onclick="loadGame()" class="secondary">📂 读档</button>
+                <button onclick="resetGame()" class="danger">重置游戏</button>
+            </div>
+        </div>
+        <div class="section"><h2>📜 推演日志</h2>
+            <div class="log" id="sim-log">${logHtml}</div></div>
+        <div class="section"><h2>🤖 AI推演设置</h2>
+            <p>当前推演模式：<strong id="ai-mode">本地模拟</strong></p>
+            <div style="margin:10px 0;">
+                <label>DeepSeek API Key：</label>
+                <input type="password" id="api-key" placeholder="输入API密钥" style="width:300px;">
+                <button onclick="toggleAIMode()" class="secondary" style="padding:8px 16px;font-size:0.9em;">切换模式</button>
+            </div>
+            <p style="color:#888;font-size:0.85em;">填写API Key后切换即可启用DeepSeek智能推演</p></div>
+    `;
+}
+
+// 辅助：生成统计卡片HTML
+function statCard(label, value, sub) {
+    return `<div class="stat-card"><div class="stat-label">${label}</div><div class="stat-value">${value}</div>${sub ? `<div class="stat-label">${sub}</div>` : ''}</div>`;
+}
+
+// 辅助：各国专属emoji
+function worldEmoji(name) {
+    const map = { '德国': '🦅', '英国': '🦁', '日本': '🏯', '美国': '🗽', '法国': '⚜️', '俄国': '❄️', '荷兰': '🚢' };
+    return map[name] || '🌍';
+}
+
+// ============================================================
+//  标签页切换
+// ============================================================
+document.getElementById('tab-bar').addEventListener('click', e => {
+    if (!e.target.classList.contains('tab')) return;
+    const tabName = e.target.dataset.tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    document.getElementById('page-' + tabName).classList.add('active');
+});
+
+// ============================================================
+//  推演核心
+// ============================================================
+
+async function runSimulation() {
+    const decree = document.getElementById('imperial-decree').value.trim();
+    const period = document.getElementById('sim-period').value;
+    const apiKey = document.getElementById('api-key').value.trim();
+
+    if (!decree) { alert('请输入陛下指令！'); return; }
+
+    const btn = document.getElementById('simulate-btn');
+    btn.disabled = true;
+    btn.textContent = '推演中...';
+
+    addLog(`陛下指令：${decree}`);
+    addLog(`推演周期：${period === 'half-month' ? '每半月' : '每三个月'}`);
+
+    try {
+        if (apiKey) {
+            await runAISimulation(decree, period, apiKey);
+        } else {
+            await runLocalSimulation(decree, period);
+        }
+    } catch (error) {
+        addLog(`推演出错：${error.message}`, 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = '开始推演';
+    document.getElementById('imperial-decree').value = '';
+
+    // 推演完毕后全量刷新页面
+    renderAllPages();
+    saveGame(); // 自动存档
+}
+
+// ============================================================
+//  本地模拟推演（无API Key时的简易模式）
+// ============================================================
+async function runLocalSimulation(decree, period) {
+    addLog('⚠️ 使用本地模拟推演（建议配置DeepSeek API获得智能推演）');
+
+    await new Promise(r => setTimeout(r, 800));
+
+    // 简易关键词匹配
+    const d = decree.toLowerCase();
+
+    if (d.includes('调动') || d.includes('进攻') || d.includes('防御') || d.includes('演习')) {
+        addLog('检测到军事指令，小幅提升相关部队训练度');
+        gameData.army.units.forEach(u => {
+            u.training = Math.min(u.training + 0.02, u.name === '亮剑方面军' ? 3.5 : u.equipment.includes('装甲') ? 3.0 : 2.5);
+            u.power = Math.round(u.troops * u.firepower * u.morale * u.training);
+        });
+        gameData.army.totalPower = gameData.army.units.reduce((s, u) => s + u.power, 0);
+    }
+
+    if (d.includes('税收') || d.includes('拨款') || d.includes('预算') || d.includes('财政')) {
+        addLog('检测到财政指令，小幅调整收支');
+        gameData.finance.monthlyIncome = Math.round(gameData.finance.monthlyIncome * 1.01);
+        gameData.finance.monthlySurplus = gameData.finance.monthlyIncome - gameData.finance.monthlyExpense;
+    }
+
+    if (d.includes('建设') || d.includes('建造') || d.includes('开工') || d.includes('修建')) {
+        addLog('检测到建设指令，推进项目进度');
+        gameData.projects.forEach(p => {
+            if (p.progress < 1) p.progress = Math.min(p.progress + 0.05, 1);
+        });
+    }
+
+    // 更新日期
+    advanceDate(period);
+    addLog(`本地模拟推演完成，当前日期：${gameData.date}`, 'success');
+}
+
+// ============================================================
+//  构建推演状态摘要 — 精简版，只传关键数据给DeepSeek
+// ============================================================
+function buildStateSummary() {
+    const g = gameData;
+    return {
+        date: g.date,
+        period: g.period,
+        government: g.government.map(x => ({ position: x.position, name: x.name })),
+        internal: {
+            railways: g.internal.railways.map(x => ({ name: x.name, status: x.status, progress: x.progress, detail: x.detail })),
+            highways: g.internal.highways.map(x => ({ name: x.name, status: x.status, progress: x.progress || 0, detail: x.detail || '' })),
+            steel: g.internal.steel,
+            oil: g.internal.oil,
+            power: g.internal.power,
+            automobiles: { annual: g.internal.automobiles.annual },
+            taiwan: g.internal.taiwan
+        },
+        army: {
+            totalTroops: g.army.totalTroops,
+            totalPower: g.army.totalPower,
+            armoredVehicles: g.army.armoredVehicles,
+            heavyTanks: g.army.heavyTanks,
+            airForce: { planes: g.army.airForce.planes, albatross: g.army.airForce.albatross, engine: g.army.airForce.engine },
+            units: g.army.units.map(x => ({ name: x.name, commander: x.commander, location: x.location, equipment: x.equipment, troops: x.troops, firepower: x.firepower, morale: x.morale, training: x.training, power: x.power }))
+        },
+        navy: {
+            totalTonnage: g.navy.totalTonnage,
+            battleships: g.navy.battleships,
+            cruisers: g.navy.cruisers,
+            destroyers: g.navy.destroyers,
+            submarines: g.navy.submarines,
+            summary: g.navy.summary,
+            fleets: g.navy.fleets.map(f => ({ name: f.name, flagship: f.flagship, ships: f.ships.map(s => ({ name: s.name, type: s.type, tonnage: s.tonnage, mainGun: s.mainGun, status: s.status })), submarines: f.submarines, cruisers: f.cruisers, destroyers: f.destroyers })),
+            antonFleet: g.navy.antonFleet.map(s => ({ name: s.name, type: s.type, status: s.status })),
+            building: g.navy.building
+        },
+        finance: {
+            treasury: g.finance.treasury,
+            monthlyIncome: g.finance.monthlyIncome,
+            monthlyExpense: g.finance.monthlyExpense,
+            monthlySurplus: g.finance.monthlySurplus,
+            incomeDetails: g.finance.incomeDetails.map(x => ({ name: x.name, amount: x.amount, unit: x.unit, note: x.note })),
+            expenseDetails: g.finance.expenseDetails.map(x => ({ name: x.name, amount: x.amount, unit: x.unit, note: x.note })),
+            specialExpenses: g.finance.specialExpenses.map(x => ({ name: x.name, amount: x.amount, unit: x.unit || '万两', note: x.note }))
+        },
+        protectorates: g.protectorates.map(x => ({ name: x.name, fee: x.fee })),
+        world: g.world.map(x => ({ name: x.name, status: x.status, details: x.details })),
+        projects: g.projects.map(x => ({ name: x.name, start: x.start, expectedEnd: x.expectedEnd, remaining: x.remaining, progress: x.progress, detail: x.detail }))
+    };
+}
+
+// ============================================================
+//  DeepSeek AI推演
+// ============================================================
+async function runAISimulation(decree, period, apiKey) {
+    addLog('🤖 开始DeepSeek AI推演...');
+
+    // 构建精简状态摘要，而非传完整gameData
+    const stateSummary = buildStateSummary();
+    const stateJSON = JSON.stringify(stateSummary, null, 2);
+
+    const systemPrompt = `你是中华帝国架空历史推演系统的核心引擎。每次推演你都会收到当前帝国的精简状态摘要和陛下指令，你需要推演一个周期后的变化，并以严格的JSON格式返回更新指令。
+
+## 推演规则（必须遵守）：
+1. 客观公正：各国均为独立主体，按自身利益行动，中华帝国不以主角光环取胜
+2. 数据驱动：所有军事、财政、建设数据必须合理计算，不可随意编造
+3. 未完成事项追踪：在建工程、研发项目需更新进度，到期自动完成
+4. 博弈多元：需推演德国、英国、日本、美国、法国、俄国等主要国家动向
+5. 训练度上限：普通部队≤2.5，装甲部队≤3.0，亮剑方面军≤3.5
+6. 战力 = 兵力 × 火力系数 × 士气 × 训练度
+7. 财政收支必须合理平衡，不可凭空增收
+
+## 返回JSON格式（关键！）
+你返回的JSON是一个"更新指令"，结构是：
+{
+  "log": "详细的推演叙述（200-800字，描述本周期发生的一切）",
+  "date": "推演后的日期（YYYY-MM-DD格式）",
+  ...其余字段只写需要变化的部分
+}
+
+### 修改已有条目：
+直接写目标路径和修改后的值。数组中按name匹配，同名条目会自动合并更新。
+例如修改近卫装甲军的训练度：
+{ "army": { "units": [ { "name": "近卫装甲军", "training": 2.65 } ] } }
+只会更新近卫装甲军的training字段，其余字段不变。
+
+### 新增条目到数组：
+在数组中写一个带新name的条目，包含所有必要字段。
+例如陛下下令修建高速公路：
+{ "internal": { "highways": [ { "name": "南京至上海高速公路", "status": "building", "progress": 0, "detail": "预算5000万两，预计工期2年" } ] } }
+这会自动添加到highways数组末尾。
+
+### 新增收入/支出项目：
+{ "finance": { "incomeDetails": [ { "name": "钢铁出口关税", "amount": 50, "unit": "万两/月", "note": "新增收入" } ] } }
+
+### 新增项目：
+{ "projects": [ { "name": "南京至上海高速公路", "start": "1934-06", "expectedEnd": "1936-06", "remaining": "约2年", "progress": 0, "detail": "预算5000万两" } ] }
+
+### 新增在建舰艇：
+{ "navy": { "building": [ { "name": "大唐舰二号", "type": "战列舰", "status": "已开工", "expectedYear": "1937年" } ] } }
+
+### 更新各国动向：
+{ "world": [ { "name": "日本", "status": "友好但警惕", "details": ["原敬内阁继续对华友好外交","37mm反坦克炮已列装2个师团","...其余要点"] } ] }
+按name匹配，同名国家的details会被整体替换。
+
+### 删除条目：
+将条目的特定字段设为 null 可删除该字段。对数组条目没有删除指令，已完成项目(progress=1)保留即可。
+
+### 重要提醒：
+- 只返回需要变化的部分！不需要返回未变化的字段
+- 数组中的条目必须包含name字段用于匹配
+- 新增条目必须包含该数组类型的所有必要字段
+- log字段必须包含详细的推演叙述
+- date字段必须更新
+- 如果陛下指令涉及大额支出，必须在finance.specialExpenses或expenseDetails中体现`;
+
+    const userPrompt = `## 当前帝国状态摘要：
+${stateJSON}
+
+## 陛下指令：
+${decree}
+
+## 推演周期：
+${period === 'half-month' ? '每半月（战时）' : '每三个月（和平）'}
+
+请推演一个周期后的变化，返回JSON更新指令。确保：
+1. 所有数值变化合理
+2. 新增条目包含完整字段
+3. 各国动向需要推演更新
+4. log字段写详细的推演叙述（200-800字）
+5. date字段更新为推演后日期`;
+
+    try {
+        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: 'deepseek-chat',
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: userPrompt }
+                ],
+                temperature: 0.7,
+                max_tokens: 4096
+            })
+        });
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`API请求失败(${response.status}): ${errText}`);
+        }
+
+        const data = await response.json();
+        const rawText = data.choices[0].message.content;
+
+        addLog('DeepSeek返回数据，正在解析...');
+
+        // 提取JSON
+        const jsonStr = extractJSON(rawText);
+        let updateData;
+        try {
+            updateData = JSON.parse(jsonStr);
+        } catch (parseErr) {
+            addLog(`JSON解析失败: ${parseErr.message}`, 'error');
+            addLog(`原始返回(前500字): ${rawText.substring(0, 500)}`, 'error');
+            throw new Error('无法解析AI返回的JSON');
+        }
+
+        // 应用更新
+        gameData = applyUpdate(gameData, updateData);
+
+        // 日志
+        if (updateData.log) {
+            // log可能很长，分段添加
+            const logText = updateData.log;
+            if (logText.length > 500) {
+                addLog(logText.substring(0, 500));
+                addLog(logText.substring(500, 1000));
+                if (logText.length > 1000) addLog(logText.substring(1000));
+            } else {
+                addLog(logText);
+            }
+        }
+
+        // 如果updateData中没有date字段，手动推进日期
+        if (!updateData.date) {
+            advanceDate(period);
+        }
+
+        addLog(`✅ AI推演完成，当前日期：${gameData.date}`, 'success');
+
+    } catch (error) {
+        addLog(`❌ AI推演失败: ${error.message}`, 'error');
+        addLog('切换到本地模拟推演...');
+        await runLocalSimulation(decree, period);
+    }
+}
+
+// 日期推进
+function advanceDate(period) {
+    const d = new Date(gameData.date);
+    if (period === 'half-month') {
+        d.setDate(d.getDate() + 15);
+    } else {
+        d.setMonth(d.getMonth() + 3);
+    }
+    gameData.date = d.toISOString().split('T')[0];
+}
+
+// 添加日志
+function addLog(msg, type = 'info') {
+    const now = gameData.date || new Date().toISOString().split('T')[0];
+    gameData.simulationLog.push({ time: now, msg, type });
+    // 同时更新DOM中的日志（如果sim-log存在）
+    const logEl = document.getElementById('sim-log');
+    if (logEl) {
+        const cls = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
+        logEl.innerHTML += `<div class="log-entry ${cls}"><span class="timestamp">[${now}]</span> ${msg}</div>`;
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+}
+
+// ============================================================
+//  存档 / 读档 / 重置
+// ============================================================
+const STORAGE_KEY = 'china-empire-game-save';
+const DATA_VERSION = 2; // 数据结构版本号，每次大改+1
+
+function saveGame() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(gameData));
+        addLog('💾 游戏已存档', 'success');
+    } catch (e) {
+        addLog(`存档失败: ${e.message}`, 'error');
+    }
+}
+
+function loadGame() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) { alert('没有找到存档！'); return; }
+        gameData = JSON.parse(saved);
+        addLog('📂 存档已加载', 'success');
+        renderAllPages();
+    } catch (e) {
+        alert(`读档失败: ${e.message}`);
+    }
+}
+
+function resetGame() {
+    if (confirm('确定要重置游戏吗？所有进度将丢失！')) {
+        localStorage.removeItem(STORAGE_KEY);
+        gameData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        renderAllPages();
+        addLog('游戏已重置为初始状态', 'success');
+    }
+}
+
+function toggleAIMode() {
+    const apiKey = document.getElementById('api-key').value.trim();
+    const modeEl = document.getElementById('ai-mode');
+    if (apiKey) {
+        modeEl.textContent = 'DeepSeek AI';
+        addLog('已切换到DeepSeek AI推演模式');
+    } else {
+        modeEl.textContent = '本地模拟';
+        addLog('已切换到本地模拟推演模式（建议配置API Key）');
+    }
+}
+
+// ============================================================
+//  数据兼容性修复 — 确保存档数据包含所有必要字段
+// ============================================================
+function ensureDataCompatibility(data) {
+    const defaults = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    // 用DEFAULT_DATA作为基底，存档数据覆盖上去
+    // 这样缺少的字段会自动补上默认值
+    const result = applyUpdate(defaults, data);
+    // 特别确保关键数组字段存在且是数组
+    if (!Array.isArray(result.government)) result.government = defaults.government;
+    if (!Array.isArray(result.army?.units)) result.army.units = defaults.army.units;
+    if (!Array.isArray(result.navy?.fleets)) result.navy.fleets = defaults.navy.fleets;
+    if (!Array.isArray(result.navy?.antonFleet)) result.navy.antonFleet = defaults.navy.antonFleet;
+    if (!Array.isArray(result.navy?.building)) result.navy.building = defaults.navy.building;
+    if (!Array.isArray(result.finance?.incomeDetails)) result.finance.incomeDetails = defaults.finance.incomeDetails;
+    if (!Array.isArray(result.finance?.expenseDetails)) result.finance.expenseDetails = defaults.finance.expenseDetails;
+    if (!Array.isArray(result.finance?.specialExpenses)) result.finance.specialExpenses = [];
+    if (!Array.isArray(result.protectorates)) result.protectorates = defaults.protectorates;
+    if (!Array.isArray(result.world)) result.world = defaults.world;
+    if (!Array.isArray(result.projects)) result.projects = defaults.projects;
+    if (!Array.isArray(result.simulationLog)) result.simulationLog = [{ time: result.date, msg: '游戏初始化完成', type: 'info' }];
+    if (!Array.isArray(result.internal?.railways)) result.internal.railways = defaults.internal.railways;
+    if (!Array.isArray(result.internal?.highways)) result.internal.highways = [];
+    return result;
+}
+
+// ============================================================
+//  初始化
+// ============================================================
+(function init() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        try {
+            const raw = JSON.parse(saved);
+            // 版本号检查：如果存档版本和当前版本不匹配，直接用默认数据
+            if (!raw._version || raw._version < DATA_VERSION) {
+                console.warn(`存档版本(${raw._version || '未知'})与当前版本(${DATA_VERSION})不匹配，重置为默认数据`);
+                localStorage.removeItem(STORAGE_KEY);
+                gameData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+            } else {
+                gameData = ensureDataCompatibility(raw);
+                console.log('从存档加载游戏数据（已做兼容性修复）');
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(gameData));
+            }
+        } catch (e) {
+            console.warn('存档解析失败，使用默认数据:', e);
+            localStorage.removeItem(STORAGE_KEY);
+            gameData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        }
+    } else {
+        gameData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    }
+    renderAllPages();
+})();
+</script>
+</body>
+</html>
