@@ -534,6 +534,7 @@
         .log-entry.error { border-left-color: var(--danger); color: #ff8a9a; }
         .log-entry.success { border-left-color: var(--escape); color: #a5d6a7; }
         .log-entry.ai { border-left-color: var(--mystery); color: #b388ff; }
+        .log-entry.warning { border-left-color: var(--gold-dim); color: var(--gold); }
         
         .settings-group {
             margin-bottom: 20px;
@@ -951,177 +952,6 @@ const SCENES = {
         ]
     },
 
-    // 补充缺失的占位场景，提供最小叙述与合理返回选项
-    attract_attention: {
-        text: [ { type: 'narration', content: '你用力摇晃铁栏，试图引起外面的注意。楼下瞬间安静下来，空气中弥漫着危险的静默。' } ],
-        choices: [ { text: '退回床上，佯装睡觉', type: 'love', scene: 'pretend_sleep', effects: {} }, { text: '继续检查窗外', type: 'investigate', scene: 'check_window', effects: {} } ]
-    },
-
-    confirm_patrol: {
-        text: [ { type: 'narration', content: '你等候片刻，确认了巡逻的节奏：两小时一轮，午夜有短暂空档。' } ],
-        choices: [ { text: '记住时间，回床休息', type: 'investigate', scene: 'rest_in_room', effects: {} }, { text: '利用空档尝试行动', type: 'escape', scene: 'determine_escape', effects: {} } ]
-    },
-
-    door_locked: {
-        text: [ { type: 'narration', content: '门把手紧锁，金属冰冷。你现在无法从外面打开门。' } ],
-        choices: [ { text: '退回床上，等待机会', type: 'love', scene: 'pretend_sleep', effects: {} }, { text: '继续寻找其他出路', type: 'investigate', scene: 'search_room', effects: {} } ]
-    },
-
-    rest_in_room: {
-        text: [ { type: 'narration', content: '你躺回床上，尽量让呼吸平稳，保持警觉。' } ],
-        choices: [ { text: '贴着门听动静', type: 'investigate', scene: 'listen_door', effects: {} }, { text: '悄悄检查床下', type: 'investigate', scene: 'search_room', effects: {} } ]
-    },
-
-    confront_shenmo: {
-        text: [ { type: 'narration', content: '你直视沈墨，声音冷硬地质问他。他的眼中闪过一丝复杂的情绪。' } ],
-        choices: [ { text: '逼问原因', type: 'escape', scene: 'threaten_shenmo', effects: {} }, { text: '试图谈判', type: 'love', scene: 'negotiate_shenmo', effects: {} } ]
-    },
-
-    observe_keys: {
-        text: [ { type: 'narration', content: '你在他西装内袋看到一串钥匙，黄铜在昏暗中微微闪光。' } ],
-        choices: [ { text: '记住位置，不声张', type: 'investigate', scene: 'pretend_sleep', effects: { flags: { saw_keys: true } } }, { text: '想办法拿到钥匙', type: 'investigate', scene: 'search_room', effects: {} } ]
-    },
-
-    take_tools: {
-        text: [ { type: 'narration', content: '你只带走了麻绳和打火机，轻装离开。' } ],
-        choices: [ { text: '继续探索房间', type: 'investigate', scene: 'search_room', effects: {} }, { text: '回到床上，假装没事', type: 'love', scene: 'pretend_sleep', effects: {} } ]
-    },
-
-    determine_escape: {
-        text: [ { type: 'narration', content: '你在心里把逃跑计划再想了一遍，决定优先寻找密道或钥匙。' } ],
-        choices: [ { text: '去书房查保险柜', type: 'investigate', scene: 'study', effects: {} }, { text: '下楼寻找入口', type: 'investigate', scene: 'explore_hallway', effects: {} } ]
-    },
-
-    threaten_shenmo: {
-        text: [ { type: 'narration', content: '你高声威胁沈墨，他的表情先是惊讶，随后变得冷峻。' } ],
-        choices: [ { text: '收起怒气，观察反应', type: 'investigate', scene: 'ask_reason', effects: {} }, { text: '故作让步', type: 'love', scene: 'pretend_sleep', effects: {} } ]
-    },
-
-    negotiate_shenmo: {
-        text: [ { type: 'narration', content: '你试探性地与沈墨交涉，试图换取自由或更多信息。' } ],
-        choices: [ { text: '继续试探', type: 'investigate', scene: 'ask_reason', effects: {} }, { text: '暂时退让', type: 'love', scene: 'pretend_sleep', effects: {} } ]
-    },
-
-    observe_room: {
-        text: [ { type: 'narration', content: '你观察房间布局，记住了出口、家具和可能藏匿物品的位置。' } ],
-        choices: [ { text: '返回床上', type: 'love', scene: 'pretend_sleep', effects: {} }, { text: '继续搜查', type: 'investigate', scene: 'search_room', effects: {} } ]
-    },
-
-    back_to_room: {
-        text: [ { type: 'narration', content: '你决定暂时退回房间，避免冲突。' } ],
-        choices: [ { text: '躺回床上', type: 'love', scene: 'pretend_sleep', effects: {} }, { text: '继续观察走廊', type: 'investigate', scene: 'explore_hallway', effects: {} } ]
-    },
-
-    defy_yechen: {
-        text: [ { type: 'narration', content: '你当众反驳顾夜辰，气氛瞬间紧张。' } ],
-        choices: [ { text: '坚持立场', type: 'escape', scene: 'living_room', effects: {} }, { text: '退回角落', type: 'investigate', scene: 'chat_living_room', effects: {} } ]
-    },
-
-    chat_living_room: {
-        text: [ { type: 'narration', content: '你坐下，借机套取对方信息，言语间试探他们的底线。' } ],
-        choices: [ { text: '继续套话', type: 'investigate', scene: 'yechen_info', effects: {} }, { text: '挑衅离开', type: 'escape', scene: 'back_to_room', effects: {} } ]
-    },
-
-    question_luxiao: {
-        text: [ { type: 'narration', content: '你直面陆骁，试图触动他的良知。' } ],
-        choices: [ { text: '请求教你防身术', type: 'investigate', scene: 'luxiao_train', effects: {} }, { text: '静默离开', type: 'escape', scene: 'back_to_room', effects: {} } ]
-    },
-
-    read_documents: {
-        text: [ { type: 'narration', content: '你快速翻阅文件，记下关键字、拍下照片以备后用。' } ],
-        choices: [ { text: '带走证据', type: 'investigate', scene: 'submit_evidence', effects: { flags: { opened_safe: true } } }, { text: '只取照片', type: 'love', scene: 'take_photo', effects: {} } ]
-    },
-
-    take_photo: {
-        text: [ { type: 'narration', content: '你把那张照片悄悄揣进衣服，心里想着如何利用它。' } ],
-        choices: [ { text: '回到走廊', type: 'investigate', scene: 'explore_hallway', effects: {} }, { text: '藏好照片，假装无事', type: 'love', scene: 'pretend_sleep', effects: {} } ]
-    },
-
-    leave_study: {
-        text: [ { type: 'narration', content: '你悄悄关上保险柜，决定先不惊动任何人。' } ],
-        choices: [ { text: '离开书房', type: 'investigate', scene: 'explore_hallway', effects: {} }, { text: '留在书房观察', type: 'investigate', scene: 'study', effects: {} } ]
-    },
-
-    mark_tunnel: {
-        text: [ { type: 'narration', content: '你记住了酒窖深处暗门的位置，等到夜深再来。' } ],
-        choices: [ { text: '回到房间', type: 'love', scene: 'pretend_sleep', effects: {} }, { text: '计划下一步', type: 'investigate', scene: 'determine_escape', effects: {} } ]
-    },
-
-    meet_baiche_cellar: {
-        text: [ { type: 'narration', content: '你在酒窖遇到白澈，他的声音低沉却真诚。' } ],
-        choices: [ { text: '请求帮助', type: 'love', scene: 'baiche_plea', effects: {} }, { text: '避免引起注意', type: 'investigate', scene: 'mark_tunnel', effects: {} } ]
-    },
-
-    hide_in_forest: {
-        text: [ { type: 'narration', content: '你在松林中躲藏，夜色与树影包裹着你。' } ],
-        choices: [ { text: '等天亮再行动', type: 'investigate', scene: 'run_to_road', effects: {} }, { text: '继续潜伏', type: 'investigate', scene: 'hide_in_forest', effects: {} } ]
-    },
-
-    hesitate_in_forest: {
-        text: [ { type: 'narration', content: '你在松林里犹豫不决，记忆与情感纠缠，让你迟疑。' } ],
-        choices: [ { text: '继续前行', type: 'escape', scene: 'run_to_road', effects: {} }, { text: '回头再想想', type: 'investigate', scene: 'hide_in_forest', effects: {} } ]
-    },
-
-    shenmo_angry: {
-        text: [ { type: 'narration', content: '沈墨的表情突然变得冰冷，他的声音像刀刃。' } ],
-        choices: [ { text: '退后一步', type: 'love', scene: 'pretend_sleep', effects: {} }, { text: '顶回去', type: 'escape', scene: 'threaten_shenmo', effects: {} } ]
-    },
-
-    shenmo_open: {
-        text: [ { type: 'narration', content: '他在温室里放松了些，与你的距离也近了些。' } ],
-        choices: [ { text: '继续陪伴', type: 'love', scene: 'date_shenmo', effects: {} }, { text: '试探性提问', type: 'investigate', scene: 'shenmo_test', effects: {} } ]
-    },
-
-    shenmo_test: {
-        text: [ { type: 'narration', content: '你巧妙地试探他的底线，想知道他是否会放你走。' } ],
-        choices: [ { text: '继续试探', type: 'investigate', scene: 'shenmo_test', effects: {} }, { text: '收手', type: 'love', scene: 'pretend_sleep', effects: {} } ]
-    },
-
-    yechen_tempt: {
-        text: [ { type: 'narration', content: '顾夜辰似乎愿意帮你，但他的条件令人不安。' } ],
-        choices: [ { text: '考虑他的提议', type: 'love', scene: 'leave_with_yechen', effects: {} }, { text: '拒绝', type: 'escape', scene: 'defy_yechen', effects: {} } ]
-    },
-
-    yechen_confess: {
-        text: [ { type: 'narration', content: '他向你透露了一些私人往事，语气中带着真诚。' } ],
-        choices: [ { text: '继续交谈', type: 'love', scene: 'date_yechen', effects: {} }, { text: '结束对话', type: 'investigate', scene: 'explore_hallway', effects: {} } ]
-    },
-
-    yechen_info: {
-        text: [ { type: 'narration', content: '你向顾夜辰套取了守卫换班的信息，这可能是关键。' } ],
-        choices: [ { text: '记下时间', type: 'investigate', scene: 'confirm_patrol', effects: { flags: { saw_garage: true } } }, { text: '保密', type: 'love', scene: 'pretend_sleep', effects: {} } ]
-    },
-
-    luxiao_guilt: {
-        text: [ { type: 'narration', content: '陆骁的眼神里透出愧疚，他的动作有些迟疑。' } ],
-        choices: [ { text: '安抚他', type: 'love', scene: 'date_luxiao', effects: {} }, { text: '观察他', type: 'investigate', scene: 'explore_hallway', effects: {} } ]
-    },
-
-    luxiao_train: {
-        text: [ { type: 'narration', content: '他简单教了你几招防身术，你的自信有所提升。' } ],
-        choices: [ { text: '练习更多', type: 'investigate', scene: 'luxiao_train', effects: { escapeProgress: 5 } }, { text: '结束训练', type: 'love', scene: 'back_to_room', effects: {} } ]
-    },
-
-    luxiao_sad: {
-        text: [ { type: 'narration', content: '你冷漠离开，陆骁显得有些失落。' } ],
-        choices: [ { text: '反省一下', type: 'investigate', scene: 'explore_hallway', effects: {} }, { text: '回房间', type: 'love', scene: 'pretend_sleep', effects: {} } ]
-    },
-
-    baiche_plea: {
-        text: [ { type: 'narration', content: '你向白澈倾诉恐惧，他的目光柔软，似乎动了恻隐之心。' } ],
-        choices: [ { text: '请求报警', type: 'investigate', scene: 'baiche_call_police', effects: {} }, { text: '保密', type: 'love', scene: 'pretend_sleep', effects: {} } ]
-    },
-
-    baiche_drug: {
-        text: [ { type: 'narration', content: '你暗中询问药物成分，他的表情有一丝闪躲。' } ],
-        choices: [ { text: '继续追问', type: 'investigate', scene: 'baiche_drug', effects: {} }, { text: '转移话题', type: 'love', scene: 'pretend_sleep', effects: {} } ]
-    },
-
-    baiche_distance: {
-        text: [ { type: 'narration', content: '你选择保持距离，白澈似乎接受了你的界限。' } ],
-        choices: [ { text: '继续观望', type: 'investigate', scene: 'explore_hallway', effects: {} }, { text: '躺下休息', type: 'love', scene: 'pretend_sleep', effects: {} } ]
-    },
-    
     // 缺失场景占位（简短叙述并给出合理后续选项）
     attract_attention: {
         text: [ { type: 'narration', content: '你用力摇晃铁栏，发出刺耳的金属撞击声。远处有人停下脚步，低声议论。' } ],
@@ -1148,8 +978,9 @@ const SCENES = {
     },
 
     rest_in_room: {
-        text: [ { type: 'narration', content: '你放松身体，装作疲惫。时间缓缓流逝，走廊的灯光在门缝下流动。' } ],
+        text: [ { type: 'narration', content: '你放松身体，装作疲惫。时间缓缓流逝，走廊的灯光在门缝下流动。走廊似乎安静下来了。' } ],
         choices: [
+            { text: '趁走廊安静，悄悄出去看看', type: 'investigate', scene: 'explore_hallway', effects: { alertLevel: 5 }, note: '探索庄园' },
             { text: '继续假寐', type: 'love', scene: 'pretend_sleep', effects: {}, note: '保持低调' },
             { text: '坐起身，继续摸索房间', type: 'investigate', scene: 'search_room', effects: {}, note: '继续搜寻' }
         ]
@@ -1180,10 +1011,10 @@ const SCENES = {
     },
 
     determine_escape: {
-        text: [ { type: 'narration', content: '你决心逃离。这份决心像火一样在胸中蔓延，你开始盘算下一步。' } ],
+        text: [ { type: 'narration', content: '你决心逃离。这份决心像火一样在胸中蔓延，你开始盘算下一步。卧室已经没有更多有用的东西了，是时候走出去看看这座庄园的真面目。' } ],
         choices: [
-            { text: '检查窗户和逃生路线', type: 'investigate', scene: 'check_window', effects: {}, note: '规划逃脱' },
-            { text: '先收集工具，再行动', type: 'investigate', scene: 'search_room', effects: {}, note: '做准备' }
+            { text: '悄悄开门，探索走廊', type: 'investigate', scene: 'explore_hallway', effects: { alertLevel: 5 }, note: '离开卧室' },
+            { text: '先去书房查找线索', type: 'investigate', scene: 'study', effects: { escapeProgress: 5 }, note: '寻找证据' }
         ]
     },
 
@@ -1244,9 +1075,10 @@ const SCENES = {
     },
 
     read_documents: {
-        text: [ { type: 'narration', content: '你匆匆翻阅文件，将重要内容用相机拍下（若有手机）。' } ],
+        text: [ { type: 'narration', content: '你匆匆翻阅文件，将重要内容用相机拍下（若有手机）。文件揭示了洗钱案的全部真相——这正是你一直在追查的证据。' } ],
         choices: [
-            { text: '拍照保存证据', type: 'investigate', scene: 'take_photo', effects: { flags: { opened_safe: true } }, note: '记录证据' },
+            { text: '收集所有证据，交给警方', type: 'investigate', scene: 'submit_evidence', effects: { flags: { opened_safe: true } }, note: '终结一切' },
+            { text: '拍照保存证据，先撤退', type: 'investigate', scene: 'take_photo', effects: { flags: { opened_safe: true } }, note: '记录证据' },
             { text: '只带走照片，匆匆离开', type: 'escape', scene: 'leave_study', effects: {}, note: '快速撤离' }
         ]
     },
@@ -1286,8 +1118,8 @@ const SCENES = {
     hide_in_forest: {
         text: [ { type: 'narration', content: '你在松林里隐蔽，听着庄园的灯光慢慢远去。夜色中既有恐惧也有希望。' } ],
         choices: [
-            { text: '天亮后继续前行', type: 'escape', scene: 'run_to_road', effects: {}, note: '争取自由' },
-            { text: '继续观察，评估风险', type: 'investigate', scene: 'hide_in_forest', effects: {}, note: '谨慎等待' }
+            { text: '天亮后继续前行', type: 'escape', scene: 'run_to_road', effects: { escapeProgress: 20 }, note: '争取自由' },
+            { text: '再等一会儿，确认安全', type: 'investigate', scene: 'hide_in_forest', effects: { escapeProgress: 5, alertLevel: -5 }, note: '谨慎等待' }
         ]
     },
 
@@ -1308,18 +1140,20 @@ const SCENES = {
     },
 
     shenmo_open: {
-        text: [ { type: 'narration', content: '他看着你，像是打开了一扇门，露出罕见的柔软。' } ],
+        text: [ { type: 'narration', content: '他看着你，像是打开了一扇门，露出罕见的柔软。玫瑰的香气在你们之间弥漫，你感到一种奇异的安宁。' } ],
         choices: [
             { text: '倾听他的话，试图建立联系', type: 'love', scene: 'date_shenmo', effects: { characters: { shenmo: { affection: 10 } } }, note: '建立情感' },
+            { text: '走向他，选择留在他身边', type: 'love', scene: 'surrender_shenmo', effects: { characters: { shenmo: { affection: 15, trust: 10 } } }, note: '放弃逃跑' },
             { text: '保持警惕，慢慢试探', type: 'investigate', scene: 'shenmo_test', effects: {}, note: '试探他的底线' }
         ]
     },
 
     shenmo_test: {
-        text: [ { type: 'narration', content: '你试探性地问他是否会放你离开，他沉默片刻，答复含糊。' } ],
+        text: [ { type: 'narration', content: '你试探性地问他是否会放你离开，他沉默片刻，答复含糊。但你在他的犹豫中看到了一丝裂痕。' } ],
         choices: [
-            { text: '继续试探', type: 'investigate', scene: 'shenmo_test', effects: {}, note: '反复试探' },
-            { text: '决定暂时信任他一些', type: 'love', scene: 'date_shenmo', effects: {}, note: '小心接近' }
+            { text: '继续试探他的真心', type: 'investigate', scene: 'shenmo_test', effects: { characters: { shenmo: { affection: 3, trust: 3 } } }, note: '缓慢增进' },
+            { text: '决定暂时信任他一些', type: 'love', scene: 'date_shenmo', effects: { characters: { shenmo: { affection: 5 } } }, note: '小心接近' },
+            { text: '趁他放松警惕，悄悄去走廊看看', type: 'escape', scene: 'explore_hallway', effects: { escapeProgress: 5 }, note: '寻找机会' }
         ]
     },
 
@@ -1348,18 +1182,20 @@ const SCENES = {
     },
 
     luxiao_guilt: {
-        text: [ { type: 'narration', content: '陆骁的目光复杂，他似乎有不愿触碰的过往。' } ],
+        text: [ { type: 'narration', content: '陆骁的目光复杂，他似乎有不愿触碰的过往。沉默中，他的拳头握紧又松开。' } ],
         choices: [
+            { text: '请求他帮你逃走', type: 'love', scene: 'luxiao_help_escape', effects: { characters: { luxiao: { affection: 15, trust: 15 } } }, note: '请求背叛' },
             { text: '温柔劝说他帮忙', type: 'love', scene: 'date_luxiao', effects: { characters: { luxiao: { affection: 10 } } }, note: '争取盟友' },
             { text: '保持距离', type: 'escape', scene: 'living_room', effects: {}, note: '谨慎为上' }
         ]
     },
 
     luxiao_train: {
-        text: [ { type: 'narration', content: '他教了你一些简易防身术，动作干净利落。' } ],
+        text: [ { type: 'narration', content: '他教了你一些简易防身术，动作干净利落。你感觉自己更有信心了。' } ],
         choices: [
-            { text: '继续练习', type: 'investigate', scene: 'luxiao_train', effects: { escapeProgress: 5 }, note: '提高技能' },
-            { text: '感谢他，离开训练室', type: 'love', scene: 'living_room', effects: {}, note: '留好关系' }
+            { text: '继续练习', type: 'investigate', scene: 'luxiao_train', effects: { escapeProgress: 5, characters: { luxiao: { affection: 2, trust: 2 } } }, note: '提高技能' },
+            { text: '感谢他，离开训练室', type: 'love', scene: 'living_room', effects: {}, note: '留好关系' },
+            { text: '趁训练间隙，去走廊探索', type: 'escape', scene: 'explore_hallway', effects: { escapeProgress: 5 }, note: '寻找机会' }
         ]
     },
 
@@ -1380,10 +1216,11 @@ const SCENES = {
     },
 
     baiche_drug: {
-        text: [ { type: 'narration', content: '你询问药物成分，他耐心解释了常用药物的作用。' } ],
+        text: [ { type: 'narration', content: '你询问药物成分，他耐心解释了常用药物的作用。你注意到他提到镇静剂时目光闪烁了一下。' } ],
         choices: [
-            { text: '借机询问更多细节', type: 'investigate', scene: 'baiche_drug', effects: {}, note: '继续套话' },
-            { text: '感谢他并离开', type: 'love', scene: 'living_room', effects: {}, note: '保持低调' }
+            { text: '追问镇静剂的用途', type: 'investigate', scene: 'baiche_drug', effects: { escapeProgress: 3, characters: { baiche: { affection: 2, trust: 2 } } }, note: '缓慢获取信息' },
+            { text: '感谢他并离开', type: 'love', scene: 'living_room', effects: {}, note: '保持低调' },
+            { text: '趁机请求他帮忙报警', type: 'love', scene: 'baiche_plea', effects: { characters: { baiche: { affection: 10, trust: 5 } } }, note: '寻求帮助' }
         ]
     },
 
@@ -1405,7 +1242,7 @@ const SCENES = {
         choices: [
             { text: '"所以你承认这是绑架？我会把你送进监狱。"', type: 'escape', scene: 'threaten_shenmo', effects: { characters: { shenmo: { affection: 5, fear: 15 } }, alertLevel: 15 }, note: '强硬对抗' },
             { text: '"如果我放弃调查，你会放我走吗？"', type: 'love', scene: 'negotiate_shenmo', effects: { characters: { shenmo: { affection: 10, trust: 10 } }, alertLevel: 5 }, note: '试探他的底线' },
-            { text: '沉默，假装被说服，暗中观察房间布局', type: 'investigate', scene: 'observe_room', effects: { escapeProgress: 10 }, note: '收集情报' }
+            { text: '假装被说服，等他离开后悄悄出门探索', type: 'investigate', scene: 'explore_hallway', effects: { escapeProgress: 5, flags: { heard_patrol: true } }, note: '离开卧室' }
         ]
     },
     
@@ -1784,7 +1621,7 @@ function renderLog() {
     const log = document.getElementById('system-log');
     if (!log) return;
     log.innerHTML = (gameData.systemLog || []).map(l => {
-        const cls = l.type === 'error' ? 'error' : l.type === 'success' ? 'success' : l.type === 'ai' ? 'ai' : '';
+        const cls = l.type === 'error' ? 'error' : l.type === 'success' ? 'success' : l.type === 'ai' ? 'ai' : l.type === 'warning' ? 'warning' : '';
         return `<div class="log-entry ${cls}">[${l.time}] ${l.msg}</div>`;
     }).join('');
     log.scrollTop = log.scrollHeight;
@@ -1811,7 +1648,7 @@ function loadGallery() {
     try {
         const saved = JSON.parse(localStorage.getItem(GALLERY_KEY) || '{}');
         if (saved.unlockedEndings) {
-            gameData.unlockedEndings = new Set([...gameData.unlockedEndings, ...saved.unlockedEndings]);
+            gameData.unlockedEndings = [...new Set([...gameData.unlockedEndings, ...saved.unlockedEndings])];
         }
         if (saved.discoveredClues) {
             gameData.discoveredClues = [...new Set([...gameData.discoveredClues, ...saved.discoveredClues])];
@@ -1821,9 +1658,11 @@ function loadGallery() {
 
 function saveGame() {
     try {
+        if (gameData.storyLog.length > 80) {
+            gameData.storyLog = gameData.storyLog.slice(-80);
+        }
         localStorage.setItem(STORAGE_KEY, JSON.stringify(gameData));
         saveGallery();
-        addLog('💾 游戏已存档', 'success');
     } catch (e) { addLog('存档失败：' + e.message, 'error'); }
 }
 
@@ -1891,6 +1730,30 @@ document.getElementById('tab-bar').addEventListener('click', e => {
 // ============================================================
 //  剧情推进
 // ============================================================
+// 场景地点映射
+const SCENE_LOCATIONS = {
+    prologue: 'bedroom', check_window: 'bedroom', listen_door: 'bedroom', pretend_sleep: 'bedroom',
+    search_room: 'bedroom', read_diary: 'bedroom', hide_diary_evidence: 'bedroom', hide_diary: 'bedroom',
+    pity_shenmo: 'bedroom', attract_attention: 'bedroom', confirm_patrol: 'bedroom', door_locked: 'bedroom',
+    rest_in_room: 'bedroom', confront_shenmo: 'bedroom', observe_keys: 'bedroom', take_tools: 'bedroom',
+    determine_escape: 'bedroom', threaten_shenmo: 'bedroom', negotiate_shenmo: 'bedroom',
+    observe_room: 'bedroom', back_to_room: 'bedroom',
+    explore_hallway: 'hallway',
+    living_room: 'living_room', chat_living_room: 'living_room', defy_yechen: 'living_room',
+    study: 'study', read_documents: 'study', take_photo: 'study', leave_study: 'study',
+    cellar: 'cellar', mark_tunnel: 'cellar', meet_baiche_cellar: 'cellar',
+    enter_tunnel: 'tunnel', hide_in_forest: 'forest', hesitate_in_forest: 'forest', run_to_road: 'forest',
+    date_shenmo: 'garden', shenmo_angry: 'garden', shenmo_open: 'garden', shenmo_test: 'garden',
+    surrender_shenmo: 'garden',
+    date_yechen: 'living_room', yechen_tempt: 'living_room', yechen_confess: 'living_room',
+    yechen_info: 'living_room', leave_with_yechen: 'garage',
+    date_luxiao: 'hallway', luxiao_guilt: 'hallway', luxiao_train: 'hallway', luxiao_sad: 'hallway',
+    luxiao_help_escape: 'hallway',
+    date_baiche: 'bedroom', baiche_plea: 'bedroom', baiche_drug: 'bedroom', baiche_distance: 'bedroom',
+    baiche_call_police: 'bedroom',
+    submit_evidence: 'study'
+};
+
 function advanceScene(sceneId) {
     if (_isAdvancingScene) {
         // 记录重入调用并入队，稍后处理最新的请求
@@ -1906,6 +1769,7 @@ function advanceScene(sceneId) {
     }
     
     gameData.currentScene = sceneId;
+    if (SCENE_LOCATIONS[sceneId]) gameData.location = SCENE_LOCATIONS[sceneId];
     const scene = SCENES[sceneId];
     if (!scene) {
         addLog('场景未找到：' + sceneId, 'error');
@@ -1942,7 +1806,13 @@ function choose(index) {
     gameData.storyLog.push({ type: 'choice', content: choice.text, ai: false });
     applyEffects(choice.effects || {});
     advanceTime(choice.advanceTime || 1);
-    if (choice.scene) advanceScene(choice.scene);
+    if (choice.scene) {
+        advanceScene(choice.scene);
+    } else {
+        updateClues();
+        if (checkEndings()) { renderAll(); return; }
+        saveGame();
+    }
     renderAll();
 }
 
@@ -2041,7 +1911,7 @@ function runLocalReaction(action) {
     gameData.storyLog.push({ type: 'narration', content: response, ai: true });
     advanceTime(1);
     updateClues();
-    checkEndings();
+    if (!checkEndings()) saveGame();
 }
 
 async function runAIStory(action) {
@@ -2192,9 +2062,10 @@ function addLog(msg, type = 'info') {
     if (!gameData.systemLog) gameData.systemLog = [];
     const now = timeString();
     gameData.systemLog.push({ time: now, msg, type });
+    if (gameData.systemLog.length > 50) gameData.systemLog.shift();
     const logEl = document.getElementById('system-log');
     if (logEl) {
-        const cls = type === 'error' ? 'error' : type === 'success' ? 'success' : type === 'ai' ? 'ai' : '';
+        const cls = type === 'error' ? 'error' : type === 'success' ? 'success' : type === 'ai' ? 'ai' : type === 'warning' ? 'warning' : '';
         logEl.innerHTML += `<div class="log-entry ${cls}">[${now}] ${msg}</div>`;
         logEl.scrollTop = logEl.scrollHeight;
     }
