@@ -664,6 +664,7 @@ const DEFAULT_DATA = {
     storyLog: [],
     currentScene: 'prologue',
     aiMode: false,
+    typewriter: true,
     apiKey: '',
     model: 'deepseek-chat',
     customHistory: [], // 用于AI上下文的最近剧情摘要
@@ -1590,7 +1591,7 @@ function renderStory() {
             <div class="story-display" id="story-display"></div>
             <div class="choices-grid" id="choices-grid"></div>
             <div class="input-row" id="custom-action-row" style="display:${gameData.aiMode ? 'flex' : 'none'}">
-                <input type="text" class="custom-input" id="custom-action" placeholder="输入你的行动（例如：试图说服陆骁放我走）...">
+                <input type="text" class="custom-input" id="custom-action" placeholder="输入你的行动（例如：试图说服陆骁放我走）..." onkeydown="if(event.key==='Enter'){event.preventDefault();submitCustomAction();}">
                 <button class="action" onclick="submitCustomAction()">行动</button>
             </div>
             <div class="hint-text">${gameData.aiMode ? 'AI 模式已开启：你既可以选择预设选项，也可以输入自定义行动。' : '本地模式：从预设选项中选择以推动剧情。在设置中开启 DeepSeek AI 可获得更自由的叙事体验。'}</div>
@@ -1720,7 +1721,7 @@ function renderSettings() {
             <div class="control-row">
                 <button class="action" onclick="toggleAIMode()">${gameData.aiMode ? '关闭 AI 模式' : '开启 AI 模式'}</button>
             </div>
-            <p class="hint-text">AI 模式开启后，剧情可由 DeepSeek 大模型实时生成。未配置 API Key 时，将自动使用本地剧情。</p>
+            <p class="hint-text">AI 模式开启后，剧情可由 DeepSeek 大模型实时生成，并会读取你之前的剧情以保持连贯。未配置 API Key 时，将自动使用本地剧情。</p>
         </div>
         <div class="panel">
             <div class="panel-title">📜 系统日志</div>
@@ -2079,27 +2080,39 @@ function runLocalReaction(action) {
     let response = '你尝试这样做，但周围似乎没有什么变化。';
     let effects = {};
     
-    if (lowered.includes('逃') || lowered.includes('跑') || lowered.includes('窗')) {
+    if (lowered.includes('逃') || lowered.includes('跑') || lowered.includes('窗') || lowered.includes('门') || lowered.includes('绳') || lowered.includes('地道')) {
         response = '你寻找逃跑的机会，但庄园的安保比你想象的严密。不过你注意到一些之前忽略的细节。';
         effects = { escapeProgress: 5, alertLevel: 5 };
     } else if (lowered.includes('沈墨') || lowered.includes('墨')) {
-        response = '你提到沈墨时，空气中仿佛有什么东西凝固了一瞬。';
+        response = '你提到沈墨时，空气中仿佛有什么东西凝固了一瞬。他的目光从阴影里移向你，带着某种难以读懂的温柔与占有。';
         effects = { characters: { shenmo: { affection: 5 } } };
     } else if (lowered.includes('顾') || lowered.includes('夜辰')) {
-        response = '顾夜辰如果听到你的名字从他唇间说出，大概会笑得很开心。';
+        response = '顾夜辰如果听到你的名字从他唇间说出，大概会笑得很开心。他在暗处把玩着车钥匙，像在盘算什么交易。';
         effects = { characters: { guyechen: { affection: 5 } } };
     } else if (lowered.includes('陆骁') || lowered.includes('骁')) {
-        response = '陆骁在走廊尽头看了你一眼，什么也没说。';
+        response = '陆骁在走廊尽头看了你一眼，什么也没说，但握枪的手指松了松——他似乎并不想真的为难你。';
         effects = { characters: { luxiao: { affection: 3 } } };
     } else if (lowered.includes('白澈') || lowered.includes('澈')) {
-        response = '白澈轻轻叹了口气，像是在担心你。';
+        response = '白澈轻轻叹了口气，像是在担心你。他低头整理药箱，耳尖却微微红了。';
         effects = { characters: { baiche: { affection: 5 } } };
-    } else if (lowered.includes('钥匙') || lowered.includes('保险柜') || lowered.includes('书房')) {
-        response = '你回忆起关于万能钥匙和保险柜的线索。';
+    } else if (lowered.includes('钥匙') || lowered.includes('保险柜') || lowered.includes('书房') || lowered.includes('密码')) {
+        response = '你回忆起关于万能钥匙和保险柜的线索——密码似乎与沈墨的妹妹有关。';
         effects = { flags: { saw_keys: true }, escapeProgress: 5 };
-    } else if (lowered.includes('酒窖') || lowered.includes('密道')) {
-        response = '酒窖深处似乎有什么在等待着你。';
+    } else if (lowered.includes('酒窖') || lowered.includes('密道') || lowered.includes('地窖') || lowered.includes('隧道')) {
+        response = '酒窖深处似乎有什么在等待着你，木箱后的暗门半掩着。';
         effects = { flags: { explored_cellar: true }, escapeProgress: 10 };
+    } else if (lowered.includes('证据') || lowered.includes('文件') || lowered.includes('洗钱') || lowered.includes('真相') || lowered.includes('警察') || lowered.includes('报警') || lowered.includes('报案') || lowered.includes('日记') || lowered.includes('沈念') || lowered.includes('妹妹')) {
+        response = '你想起了那些足以掀翻整座庄园的证据——日记、保险柜里的文件、还有白澈的良心。这一步若走对，便是真相大白。';
+        effects = { flags: { found_diary: true }, escapeProgress: 5 };
+    } else if (lowered.includes('信任') || lowered.includes('说服') || lowered.includes('求情') || lowered.includes('谈判') || lowered.includes('合作')) {
+        response = '你试着用言语撬开对方的防线。你的诚恳让某个人眼底的坚冰裂开了一道缝。';
+        effects = { characters: { [getMostLoved() || 'shenmo']: { trust: 5, affection: 3 } } };
+    } else if (lowered.includes('药') || lowered.includes('酒') || lowered.includes('水') || lowered.includes('食物') || lowered.includes('饭')) {
+        response = '你接过递来的东西，指尖无意相触。对方没有收回手，空气里多了一丝说不清的暧昧。';
+        effects = { characters: { [getMostLoved() || 'baiche']: { affection: 4 } } };
+    } else if (lowered.includes('抱') || lowered.includes('吻') || lowered.includes('亲') || lowered.includes('喜欢') || lowered.includes('爱')) {
+        response = '你靠近的瞬间，呼吸交错。对方明显怔了一下，随即伸手将你揽住——动作比语言诚实得多。';
+        effects = { characters: { [getMostLoved() || 'shenmo']: { affection: 8, trust: 3 } }, alertLevel: 3 };
     }
     
     applyEffects(effects);
@@ -2217,21 +2230,40 @@ function buildSystemPrompt() {
 2. 保持角色性格一致性。
 3. 情节可以包含情感张力、暗示、轻微暧昧，但禁止色情或过度暴力。
 4. 返回严格 JSON，包含：narrative（剧情段落，200-400字）、dialogue（可选，对话数组）、location（可选，新地点）、hourAdvance（时间推进小时数）、effects（对角色好感/恐惧/信任、escapeProgress、alertLevel的影响，参考 applyEffects 格式）、choices（3个选项，每个含 text/type/.effects/note）。choices 中的 scene 字段必须留空（null），不要填写任何场景 id——剧情推进由本地引擎处理，结局通过 effects.flags 触发。
-5. 如果用户行动会导致某个结局，在 effects 中设置对应 flags，如 surrendered_to_shenmo、left_with_yechen、luxiao_helped_escape、baiche_called_police、submitted_evidence、in_tunnel。`;
+5. 如果用户行动会导致某个结局，在 effects 中设置对应 flags，如 surrendered_to_shenmo、left_with_yechen、luxiao_helped_escape、baiche_called_police、submitted_evidence、in_tunnel。
+6. 叙事必须承接【最近剧情回顾】中的内容，与玩家此前经历严格一致；不要重复已经发生过的事，而是在其基础上自然推进。若玩家提及某角色或事件，需与上下文中已建立的设定相符（如沈墨的妹妹沈念、保险柜密码 0417、酒窖密道等）。
+7. 始终使用中文、第二人称（"你"）叙述，保持哥特浪漫与悬疑基调，单段叙事控制在 180-360 字。`;
 }
 
 function buildAIPrompt(action, state) {
     const history = gameData.customHistory.map(h => `- 行动：${h.action}\n  摘要：${h.summary}`).join('\n');
+    const recentStory = buildRecentStoryContext();
     return `当前游戏状态：
 ${JSON.stringify(state, null, 2)}
 
-最近剧情摘要：
+【最近剧情回顾】（玩家此前经历的真实剧情，请务必承接上文、保持连贯，不要重复已发生的内容）：
+${recentStory || '（游戏刚开始，尚未发生剧情）'}
+
+【玩家最近的自由行动记录】：
 ${history || '无'}
 
 玩家输入的自定义行动：
 """${action}"""
 
 请根据当前状态、角色关系和玩家行动，生成下一段剧情。必须返回 JSON 格式。`;
+}
+
+// 从 storyLog 提取最近剧情文本，浓缩后注入 AI 上下文，解决自由叙事模式下的"失忆/脱节"问题
+function buildRecentStoryContext(limit = 14) {
+    const pick = gameData.storyLog.filter(p => p.type === 'dialogue' || p.type === 'narration' || p.type === 'thought');
+    const slice = pick.slice(-limit);
+    return slice.map(p => {
+        let c = p.content || '';
+        if (c.length > 100) c = c.slice(0, 100) + '…';
+        if (p.type === 'dialogue') return `${p.speaker}：「${c}」`;
+        if (p.type === 'thought') return `（内心独白：${c}）`;
+        return c;
+    }).join('\n');
 }
 
 function buildStateSummary() {
