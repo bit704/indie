@@ -707,6 +707,7 @@ const DEFAULT_DATA = {
 
 let gameData;
 let currentChoices = [];
+let _typeTimers = [];
 
 // ============================================================
 //  工具函数
@@ -1604,15 +1605,70 @@ function renderStory() {
 function renderStoryLog() {
     const display = document.getElementById('story-display');
     if (!display) return;
+    clearTypeTimers();
     display.innerHTML = gameData.storyLog.map(p => {
         if (p.type === 'choice') {
             return `<div class="story-choice">🌹 你选择：${p.content}</div>`;
         }
         if (p.type === 'dialogue') {
-            return `<div class="story-paragraph ${p.ai ? 'ai-generated' : ''}"><div class="story-speaker">${p.speaker}</div>${p.content}</div>`;
+            return `<div class="story-paragraph ${p.ai ? 'ai-generated' : ''}"><div class="story-speaker">${p.speaker}</div><span class="type-target">${p.content}</span></div>`;
         }
-        return `<div class="story-paragraph ${p.ai ? 'ai-generated' : ''}">${p.type === 'thought' ? '<em style="color:var(--text-muted);">（' + p.content + '）</em>' : p.content}</div>`;
+        return `<div class="story-paragraph ${p.ai ? 'ai-generated' : ''}">${p.type === 'thought' ? '<em style="color:var(--text-muted);">（<span class="type-target">' + p.content + '</span>）</em>' : '<span class="type-target">' + p.content + '</span>'}</div>`;
     }).join('');
+
+    display.onclick = skipTyping;
+
+    // 收集尚未逐字显示的条目，串行打字；已显示的保持原样
+    const pending = [];
+    gameData.storyLog.forEach((p, i) => { if (!p._typed) pending.push(i); });
+    if (!gameData.typewriter || pending.length === 0) {
+        pending.forEach(i => { gameData.storyLog[i]._typed = true; });
+        display.scrollTop = display.scrollHeight;
+        return;
+    }
+    let idx = 0;
+    function typeNext() {
+        if (idx >= pending.length) { display.scrollTop = display.scrollHeight; return; }
+        const i = pending[idx++];
+        const node = display.children[i];
+        const target = node ? node.querySelector('.type-target') : null;
+        if (!target) { typeNext(); return; }
+        const full = target.getAttribute('data-full') || target.textContent;
+        target.setAttribute('data-full', full);
+        target.textContent = '';
+        let k = 0;
+        const speed = 16;
+        function step() {
+            if (k >= full.length) { gameData.storyLog[i]._typed = true; typeNext(); return; }
+            target.textContent = full.slice(0, k + 1);
+            k++;
+            display.scrollTop = display.scrollHeight;
+            _typeTimers.push(setTimeout(step, speed));
+        }
+        step();
+    }
+    typeNext();
+}
+
+function clearTypeTimers() {
+    _typeTimers.forEach(t => clearTimeout(t));
+    _typeTimers = [];
+}
+
+// 点击故事区：立即补全所有正在逐字显示的文本
+function skipTyping() {
+    clearTypeTimers();
+    const display = document.getElementById('story-display');
+    if (!display) return;
+    gameData.storyLog.forEach((p, i) => {
+        if (p._typed) return;
+        const node = display.children[i];
+        const target = node ? node.querySelector('.type-target') : null;
+        if (target) {
+            target.textContent = target.getAttribute('data-full') || target.textContent;
+            p._typed = true;
+        }
+    });
     display.scrollTop = display.scrollHeight;
 }
 
@@ -1718,6 +1774,13 @@ function renderSettings() {
                     <option value="deepseek-reasoner" ${gameData.model === 'deepseek-reasoner' ? 'selected' : ''}>deepseek-reasoner</option>
                 </select>
             </div>
+            <div class="settings-group">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                    <input type="checkbox" id="typewriter-toggle" ${gameData.typewriter ? 'checked' : ''} onchange="toggleTypewriter()" style="width:auto;max-width:none;margin:0;">
+                    逐字打字机效果
+                </label>
+                <span class="progress-desc">开启后剧情文字逐字浮现，点击故事区可立即跳过；沉浸感更强。关闭则文字瞬间显示。</span>
+            </div>
             <div class="control-row">
                 <button class="action" onclick="toggleAIMode()">${gameData.aiMode ? '关闭 AI 模式' : '开启 AI 模式'}</button>
             </div>
@@ -1729,6 +1792,14 @@ function renderSettings() {
         </div>
     `;
     renderLog();
+}
+
+function toggleTypewriter() {
+    gameData.typewriter = !gameData.typewriter;
+    if (!gameData.typewriter) gameData.storyLog.forEach(p => p._typed = true);
+    saveGame();
+    renderSettings();
+    renderStory();
 }
 
 function renderLog() {
@@ -1886,6 +1957,8 @@ function ensureCompatibility(data) {
         }
       }
     }
+    // 从存档恢复时标记历史剧情为已显示，避免读档/续玩重播打字机动画
+    merged.storyLog.forEach(p => { if (p && typeof p === 'object') p._typed = true; });
     return merged;
 }
 
