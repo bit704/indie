@@ -750,7 +750,9 @@ function timeString() {
 function evalCondition(condition) {
     if (!condition) return true;
     try {
-        return new Function('gameData', 'characters', 'return ' + condition)(gameData, gameData.characters);
+        // 用 with(gameData) 让条件串里的裸标识符（flags / location / discoveredClues / day / alertLevel / escapeProgress 等）
+        // 正确解析到 gameData 的属性；characters 仍由参数显式传入。
+        return new Function('gameData', 'characters', 'with(gameData){ return (' + condition + '); }')(gameData, gameData.characters);
     } catch (e) { return false; }
 }
 
@@ -1254,8 +1256,8 @@ const SCENES = {
         choices: [
             { text: '记下信息，离开客厅', type: 'investigate', scene: 'explore_hallway', effects: { flags: { saw_garage: true } }, note: '获得线索' },
             { text: '当场质问他', type: 'escape', scene: 'defy_yechen', effects: { alertLevel: 5 }, note: '冒险质问' },
-            { text: '听他继续说，了解他提出的交易条件', type: 'love', scene: 'yechen_tempt', effects: { characters: { yechen: { affection: 5 } } }, note: '走近交易' },
-            { text: '趁气氛柔软，主动靠近倾听他的过去', type: 'love', scene: 'yechen_confess', effects: { characters: { yechen: { affection: 8 } } }, note: '情感深入' }
+            { text: '听他继续说，了解他提出的交易条件', type: 'love', scene: 'yechen_tempt', effects: { characters: { guyechen: { affection: 5 } } }, note: '走近交易' },
+            { text: '趁气氛柔软，主动靠近倾听他的过去', type: 'love', scene: 'yechen_confess', effects: { characters: { guyechen: { affection: 8 } } }, note: '情感深入' }
         ]
     },
 
@@ -1865,7 +1867,7 @@ function ensureCompatibility(data) {
     const merged = deepMerge(base, data);
     merged.allClues = base.allClues;
     merged.allEndings = base.allEndings.map(e => {
-        const saved = (data.allEndings || []).find(x => x.id === e.id);
+        const saved = (Array.isArray(data.allEndings) ? data.allEndings : []).find(x => x.id === e.id);
         return saved ? { ...e, ...saved } : e;
     });
     if (!Array.isArray(merged.discoveredClues)) merged.discoveredClues = [];
@@ -1873,6 +1875,16 @@ function ensureCompatibility(data) {
     if (!Array.isArray(merged.storyLog)) merged.storyLog = [];
     if (!Array.isArray(merged.customHistory)) merged.customHistory = [];
     if (!Array.isArray(merged.systemLog)) merged.systemLog = [];
+    // 兜底：把角色数值字段强制为合法数字，防止损坏存档写入非法类型导致后续 clamp/运算出 NaN
+    for (const k of Object.keys(merged.characters || {})) {
+      const c = merged.characters[k];
+      if (!c || typeof c !== 'object') continue;
+      for (const stat of ['affection', 'trust', 'fear']) {
+        if (typeof c[stat] !== 'number' || isNaN(c[stat])) {
+          c[stat] = (base.characters[k] && typeof base.characters[k][stat] === 'number') ? base.characters[k][stat] : 0;
+        }
+      }
+    }
     return merged;
 }
 
