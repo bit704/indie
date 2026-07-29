@@ -694,14 +694,14 @@ const DEFAULT_DATA = {
     ],
     
     allEndings: [
-        { id: 'escape_alone', title: '孤身逃离', desc: '你利用密道逃出了庄园，在黎明前的松林里拦下一辆货车。自由了，但那段记忆将永远跟随你。', condition: 'escapeProgress >= 80 && affectionHighest() < 60', unlocked: false },
-        { id: 'shenmo_lover', title: '共犯与囚徒', desc: '你最终选择留在沈墨身边。你不再是猎物，而是他的共谋者。庄园的玫瑰年年盛开，而你是唯一被允许触摸它们的人。', condition: 'characters.shenmo.affection >= 80', unlocked: false },
-        { id: 'yechen_deal', title: '金丝雀契约', desc: '顾夜辰帮你伪造了新身份，带你离开了庄园。你住进他的城市公寓，像只被豢养的金丝雀，却乐在其中。', condition: 'characters.guyechen.affection >= 80', unlocked: false },
-        { id: 'luxiao_betrayal', title: '忠诚的背叛', desc: '陆骁放走了你。在沈墨的枪声中，他挡在你身后。你们驾车驶入暴雨，他的血染红了副驾驶座。', condition: 'characters.luxiao.affection >= 80 && characters.luxiao.trust >= 50', unlocked: false },
-        { id: 'baiche_redemption', title: '医生的救赎', desc: '白澈报警了。他亲手结束了这场囚禁，也亲手把自己送进了监狱。你在探监室的玻璃后，第一次对他说了谢谢。', condition: 'characters.baiche.affection >= 80 && characters.baiche.trust >= 50', unlocked: false },
-        { id: 'truth_exposed', title: '真相大白', desc: '你将所有证据交给警方，庄园被查封。四个男人各有归宿，而你终于能睡一个安稳的觉。', condition: 'discoveredClues.length >= 8 && flags.opened_safe', unlocked: false },
-        { id: 'give_up', title: '温水煮青蛙', desc: '你没有逃，也没有爱。日子一天天过去，你习惯了被照顾、被关注，直到有一天，你不再想离开。', condition: 'day >= 15 && escapeProgress < 30 && affectionHighest() < 50', unlocked: false },
-        { id: 'bad_end', title: '玫瑰凋零', desc: '你的反抗激怒了他们。某个深夜，你被注射了镇静剂，醒来时，世界安静得可怕。', condition: 'alertLevel >= 100', unlocked: false }
+        { id: 'escape_alone', title: '孤身逃离', desc: '你踩着泥泞与松针冲出密道，在黎明前灰蓝色的天光里拦下一辆运货的卡车。司机盯着你满身的划痕犹豫了三秒，最终还是让你上了车。车轮碾过晨雾时，你回头望去，沈家庄园像一头沉睡的巨兽，渐渐缩成地平线上的一团阴影。自由了——可后视镜里那扇铁栏窗，和某个人的眼神，会在此后每一个梦里反复出现。', condition: 'escapeProgress >= 80 && affectionHighest() < 60', unlocked: false },
+        { id: 'shenmo_lover', title: '共犯与囚徒', desc: '你最终把手放进了他的掌心。沈墨的手指收紧时，你听见他极轻地呼出一口气，像是从十年前那个雨夜起就悬着的一口气。你不再是被囚的猎物，而是他唯一的共谋者。从此庄园的玫瑰年年盛开，你是唯一被允许亲手触碰它们的人；而他的过去、他的罪恶、他妹妹的名字，也都成了只属于你二人的秘密。笼门从未打开，但你已不想出去。', condition: 'characters.shenmo.affection >= 80', unlocked: false },
+        { id: 'yechen_deal', title: '金丝雀契约', desc: '顾夜辰用一套干净的身份把你从庄园里偷了出来，像完成一场漂亮的魔术。你住进他在城市高层的公寓，落地窗外是整个霓虹闪烁的江湖。他把钥匙留在玄关，笑着说"这是你自己的笼子，想走随时走"——可你知道，他算准了你不会走。你像一只被豢养的金丝雀，羽毛艳丽，食水无忧，而他每晚回家时，眼里那点真实的温柔，让你竟也乐在其中。', condition: 'characters.guyechen.affection >= 80', unlocked: false },
+        { id: 'luxiao_betrayal', title: '忠诚的背叛', desc: '陆骁违背了跟随沈墨十年的誓言，在午夜替你打开了那扇门。车冲出庄园的瞬间，身后的枪声响起，他一句话没说，只是把你整个人压进副驾驶座底下。暴雨砸在车窗上，他的血顺着你指缝淌下，温热得烫人。你攥着他的手哭喊，他却用最后一点力气把方向盘稳住："别停……别回头。"那一刻你才懂，这个最沉默的男人，把整条命都还给了你。', condition: 'characters.luxiao.affection >= 80 && characters.luxiao.trust >= 50', unlocked: false },
+        { id: 'baiche_redemption', title: '医生的救赎', desc: '白澈拨通了那通电话。他亲手结束了这场囚禁，也亲手把自己送进了本该关着沈墨的牢房。警灯映红庄园外墙的那个夜晚，他在押上警车前回头看了你一眼，没有歉疚，只有如释重负。一个月后，你在探监室的玻璃对面坐下，看着他剃短的头发和依旧温和的眼睛，第一次认真地说了句"谢谢"。他愣了愣，隔着玻璃比你做了一个"保重"的口型——这大概是他能给你的，最后的处方。', condition: 'characters.baiche.affection >= 80 && characters.baiche.trust >= 50', unlocked: false },
+        { id: 'truth_exposed', title: '真相大白', desc: '你把所有证据——保险柜里的文件、酒窖密道的照片、白澈的证词——一股脑交给了专案组。三天后，荷枪实弹的警察封死了沈家庄园的铁门。你站在警戒线外，看沈墨、顾夜辰、陆骁、白澈被依次押上警车，四个男人各有归宿，没有人再看你一眼。风卷起地上的枯玫瑰，你转身走进阳光里，背包里那本少女日记沉甸甸的。那一夜，你终于睡了一个没有铁栏、没有雪松香气的安稳觉。', condition: 'discoveredClues.length >= 8 && flags.opened_safe', unlocked: false },
+        { id: 'give_up', title: '温水煮青蛙', desc: '你没有逃，也没有爱上谁。日子像泡在温水里一天天过去——三餐有人备好，衣服有人熨平，连噩梦都有人轻轻拍醒。你渐渐习惯了被照顾、被关注、被妥善地收纳进这座庄园的秩序里。某个秋日的午后，你望着窗外盛开的玫瑰，忽然惊觉自己已经很久没有想过"离开"这两个字了。铁栏还在，门也从未开过，可你已懒得去碰。温水尚暖，你合上了眼。', condition: 'day >= 15 && escapeProgress < 30 && affectionHighest() < 50', unlocked: false },
+        { id: 'bad_end', title: '玫瑰凋零', desc: '你的反抗终于越过了他们容忍的底线。某个深夜，白澈端着一杯温水走进来，你没多想便喝下——直到意识像退潮般迅速抽离，才看见他眼里那一闪而过的、近乎悲悯的歉意。再醒来时，铁栏、玫瑰、雪松香气都不见了，世界安静得可怕，安静得连自己的心跳都听不见。镜子里的人眼神空茫，像一朵被连根拔起、摆在玻璃罩里的玫瑰，再也不会凋谢，也再也不会盛开。', condition: 'alertLevel >= 100', unlocked: false }
     ]
 };
 
@@ -987,7 +987,10 @@ const SCENES = {
     },
 
     confront_shenmo: {
-        text: [ { type: 'narration', content: '你抬起声音直面他。他的目光像刀，但话语却控制得很温和。' } ],
+        text: [
+            { type: 'narration', content: '你抬起声音直面他。他的目光像刀，但话语却控制得很温和。' },
+            { type: 'dialogue', speaker: '沈墨', content: '"直面我？"他微微俯身，影子笼罩下来，"你比我想象中勇敢。可惜，勇敢在这里是最没用的东西。"' }
+        ],
         choices: [
             { text: '质问他的动机', type: 'investigate', scene: 'ask_reason', effects: {}, note: '逼问真相' },
             { text: '提高声调威胁他', type: 'escape', scene: 'threaten_shenmo', effects: { alertLevel: 10 }, note: '激怒沈墨' }
@@ -1019,7 +1022,10 @@ const SCENES = {
     },
 
     threaten_shenmo: {
-        text: [ { type: 'narration', content: '你直言相告他的所作所为，他的表情短暂扭曲，随后冷笑。' } ],
+        text: [
+            { type: 'narration', content: '你直言相告他的所作所为，他的表情短暂扭曲，随后冷笑。' },
+            { type: 'dialogue', speaker: '沈墨', content: '"送我进监狱？"他笑容凉薄，"等你能走出这扇门，再来说这句话。在那之前，你只是我的客人——一位永远走不掉的客人。"' }
+        ],
         choices: [
             { text: '继续施压', type: 'escape', scene: 'confront_shenmo', effects: { alertLevel: 20 }, note: '危险升级' },
             { text: '收敛锋芒，试探性地妥协', type: 'love', scene: 'negotiate_shenmo', effects: {}, note: '观察反应' }
@@ -1027,10 +1033,15 @@ const SCENES = {
     },
 
     negotiate_shenmo: {
-        text: [ { type: 'narration', content: '你尝试与他讨价还价，他的语气似乎软了些，但眼里仍有戒备。' } ],
+        text: [
+            { type: 'narration', content: '你尝试与他讨价还价，他的语气似乎软了些，但眼里仍有戒备。' },
+            { type: 'dialogue', speaker: '沈墨', content: '"交换？"他轻笑，指尖在扶手椅扶手上敲了敲，"你拿什么和我换，记者小姐？你的自由，还是你的命？"' },
+            { type: 'dialogue', speaker: '沈墨', content: '"不过……如果你肯安分地留下来，我会让你比外面安全得多。这庄园里，没有人能伤你——除了我。"' }
+        ],
         choices: [
             { text: '提出交换条件', type: 'investigate', scene: 'observe_room', effects: {}, note: '试探底线' },
-            { text: '假装接受，等待机会', type: 'love', scene: 'pretend_sleep', effects: {}, note: '拖延时间' }
+            { text: '假装接受，等待机会', type: 'love', scene: 'pretend_sleep', effects: {}, note: '拖延时间' },
+            { text: '走近他，试图缓和气氛，了解他的动机', type: 'love', scene: 'shenmo_angry', effects: { characters: { shenmo: { affection: 5 } } }, note: '主动靠近沈墨' }
         ]
     },
 
@@ -1051,7 +1062,10 @@ const SCENES = {
     },
 
     defy_yechen: {
-        text: [ { type: 'narration', content: '你顶住他的挑衅，语气冰冷。顾夜辰的笑容略带挑衅。' } ],
+        text: [
+            { type: 'narration', content: '你顶住他的挑衅，语气冰冷。顾夜辰的笑容略带挑衅。' },
+            { type: 'dialogue', speaker: '顾夜辰', content: '"啧，脾气真烈。"他笑出了声，"我就喜欢你这股劲儿。可惜啊，再烈的脾气，也得乖乖待在这笼子里。"' }
+        ],
         choices: [
             { text: '保持强硬，观望反应', type: 'escape', scene: 'living_room', effects: { alertLevel: 10 }, note: '引起注意' },
             { text: '坐下观察他们', type: 'investigate', scene: 'chat_living_room', effects: {}, note: '套取情报' }
@@ -1059,7 +1073,10 @@ const SCENES = {
     },
 
     chat_living_room: {
-        text: [ { type: 'narration', content: '你坐到沙发上，跟顾夜辰聊起琐事，试图从话中套出信息。' } ],
+        text: [
+            { type: 'narration', content: '你坐到沙发上，跟顾夜辰聊起琐事，试图从话中套出信息。' },
+            { type: 'dialogue', speaker: '顾夜辰', content: '"别那么紧张，小公主。"他往你那边挪了挪，酒杯里的红酒晃出细碎的光，"我又不会吃了你——至少，不会现在吃。"' }
+        ],
         choices: [
             { text: '谈论庄园安排，套取班次信息', type: 'investigate', scene: 'yechen_info', effects: {}, note: '暗中打探' },
             { text: '找机会离开客厅', type: 'escape', scene: 'explore_hallway', effects: {}, note: '继续探索' }
@@ -1067,7 +1084,11 @@ const SCENES = {
     },
 
     question_luxiao: {
-        text: [ { type: 'narration', content: '你直视陆骁，问他为什么要参与这件事。他沉默，眼底闪过矛盾。' } ],
+        text: [
+            { type: 'narration', content: '你直视陆骁，问他为什么要参与这件事。他沉默，眼底闪过矛盾。' },
+            { type: 'dialogue', speaker: '陆骁', content: '"……有些事，知道了没好处。"他别开脸，"我欠沈先生一条命。他在战场上，替我挡过子弹。"' },
+            { type: 'dialogue', speaker: '陆骁', content: '"但你不一样。你不该待在这。"' }
+        ],
         choices: [
             { text: '温和地试探他的良知', type: 'love', scene: 'luxiao_guilt', effects: {}, note: '触动他' },
             { text: '默默离开，不逼他', type: 'escape', scene: 'living_room', effects: {}, note: '保守行事' }
@@ -1108,7 +1129,11 @@ const SCENES = {
     },
 
     meet_baiche_cellar: {
-        text: [ { type: 'narration', content: '你遇到了白澈，他语气温柔，似乎想帮你。' } ],
+        text: [
+            { type: 'narration', content: '你遇到了白澈，他语气温柔，似乎想帮你。' },
+            { type: 'dialogue', speaker: '白澈', content: '"你不该到这儿来的。"他四下张望，确认没人，才压低声音，"但这里……也许真有你要的出口。"' },
+            { type: 'dialogue', speaker: '白澈', content: '"我每天看着你，都在想，如果换作是我被关着，会希望有人为我做什么。"' }
+        ],
         choices: [
             { text: '恳求他帮忙', type: 'love', scene: 'baiche_plea', effects: {}, note: '寻求援助' },
             { text: '小心试探他的立场', type: 'investigate', scene: 'baiche_drug', effects: {}, note: '观察反应' }
@@ -1132,7 +1157,10 @@ const SCENES = {
     },
 
     shenmo_angry: {
-        text: [ { type: 'narration', content: '他的脸色瞬间变得难以接近，话语变得尖锐。气氛凝重。' } ],
+        text: [
+            { type: 'narration', content: '他的脸色瞬间变得难以接近，话语变得尖锐。气氛凝重。' },
+            { type: 'dialogue', speaker: '沈墨', content: '"你以为靠近我，就能找到破绽？"他的声音压得很低，像绷紧的弦，"别自作聪明。我留你，是因为我愿意；我毁你，也只是一句话的事。"' }
+        ],
         choices: [
             { text: '收敛语气，试图缓和', type: 'love', scene: 'shenmo_open', effects: {}, note: '缓和局势' },
             { text: '继续反抗，赌一把', type: 'escape', scene: 'threaten_shenmo', effects: { alertLevel: 20 }, note: '冒险' }
@@ -1140,7 +1168,11 @@ const SCENES = {
     },
 
     shenmo_open: {
-        text: [ { type: 'narration', content: '他看着你，像是打开了一扇门，露出罕见的柔软。玫瑰的香气在你们之间弥漫，你感到一种奇异的安宁。' } ],
+        text: [
+            { type: 'narration', content: '他看着你，像是打开了一扇门，露出罕见的柔软。玫瑰的香气在你们之间弥漫，你感到一种奇异的安宁。' },
+            { type: 'dialogue', speaker: '沈墨', content: '"十年了。"他忽然开口，目光落在远处的白玫瑰上，"我再也没让任何人，进过这间温室。"' },
+            { type: 'dialogue', speaker: '沈墨', content: '"你和她不一样。她听话，你倔。可偏偏……我才敢把后背交给你。"' }
+        ],
         choices: [
             { text: '倾听他的话，试图建立联系', type: 'love', scene: 'date_shenmo', effects: { characters: { shenmo: { affection: 10 } } }, note: '建立情感' },
             { text: '走向他，选择留在他身边', type: 'love', scene: 'surrender_shenmo', effects: { characters: { shenmo: { affection: 15, trust: 10 } } }, note: '放弃逃跑' },
@@ -1149,7 +1181,11 @@ const SCENES = {
     },
 
     shenmo_test: {
-        text: [ { type: 'narration', content: '你试探性地问他是否会放你离开，他沉默片刻，答复含糊。但你在他的犹豫中看到了一丝裂痕。' } ],
+        text: [
+            { type: 'narration', content: '你试探性地问他是否会放你离开，他沉默片刻，答复含糊。但你在他的犹豫中看到了一丝裂痕。' },
+            { type: 'dialogue', speaker: '沈墨', content: '"放你走？"他偏过头，似乎被逗笑了，"外面的子弹可不长眼。你走了，那群人才真会动手。"' },
+            { type: 'dialogue', speaker: '沈墨', content: '"留在这里，至少死的是我，不是你。"' }
+        ],
         choices: [
             { text: '继续试探他的真心', type: 'investigate', scene: 'shenmo_test', effects: { characters: { shenmo: { affection: 3, trust: 3 } } }, note: '缓慢增进' },
             { text: '决定暂时信任他一些', type: 'love', scene: 'date_shenmo', effects: { characters: { shenmo: { affection: 5 } } }, note: '小心接近' },
@@ -1158,7 +1194,10 @@ const SCENES = {
     },
 
     yechen_tempt: {
-        text: [ { type: 'narration', content: '顾夜辰微笑着提出离开的可能，语气里有利益交换的意味。' } ],
+        text: [
+            { type: 'narration', content: '顾夜辰微笑着提出离开的可能，语气里有利益交换的意味。' },
+            { type: 'dialogue', speaker: '顾夜辰', content: '"想走？也不是不行。"他晃了晃酒杯，"我手里有套干净的身份，足够你消失得干干净净。代价嘛——你欠我一个人情，一辈子那种。"' }
+        ],
         choices: [
             { text: '接受他的提议', type: 'love', scene: 'leave_with_yechen', effects: {}, note: '信任他' },
             { text: '拒绝，自己寻找出路', type: 'escape', scene: 'determine_escape', effects: {}, note: '独立行动' }
@@ -1166,7 +1205,10 @@ const SCENES = {
     },
 
     yechen_confess: {
-        text: [ { type: 'narration', content: '他透露了一些个人信息，看似真诚，却让人难以完全信任。' } ],
+        text: [
+            { type: 'narration', content: '他透露了一些个人信息，看似真诚，却让人难以完全信任。' },
+            { type: 'dialogue', speaker: '顾夜辰', content: '"说真的，我年轻时候也想过当好人。"他耸耸肩，笑意却没达眼底，"后来发现，好人活不长。你这么聪明，应该懂我的意思。"' }
+        ],
         choices: [
             { text: '继续追问细节', type: 'investigate', scene: 'yechen_info', effects: {}, note: '套话' },
             { text: '暂时信任他', type: 'love', scene: 'date_yechen', effects: {}, note: '亲近' }
@@ -1174,15 +1216,24 @@ const SCENES = {
     },
 
     yechen_info: {
-        text: [ { type: 'narration', content: '你从他口中套出了巡逻换班的信息与车库位置。' } ],
+        text: [
+            { type: 'narration', content: '你从他口中套出了巡逻换班的信息与车库位置。' },
+            { type: 'dialogue', speaker: '顾夜辰', content: '"午夜十二点，陆骁换班，那五分钟走廊是空的。"他压低声音，眼里却闪着玩味，"至于车库钥匙……我帮你偷过来了。别告诉沈墨，他会吃醋的。"' }
+        ],
         choices: [
             { text: '记下信息，离开客厅', type: 'investigate', scene: 'explore_hallway', effects: { flags: { saw_garage: true } }, note: '获得线索' },
-            { text: '当场质问他', type: 'escape', scene: 'defy_yechen', effects: { alertLevel: 5 }, note: '冒险质问' }
+            { text: '当场质问他', type: 'escape', scene: 'defy_yechen', effects: { alertLevel: 5 }, note: '冒险质问' },
+            { text: '听他继续说，了解他提出的交易条件', type: 'love', scene: 'yechen_tempt', effects: { characters: { yechen: { affection: 5 } } }, note: '走近交易' },
+            { text: '趁气氛柔软，主动靠近倾听他的过去', type: 'love', scene: 'yechen_confess', effects: { characters: { yechen: { affection: 8 } } }, note: '情感深入' }
         ]
     },
 
     luxiao_guilt: {
-        text: [ { type: 'narration', content: '陆骁的目光复杂，他似乎有不愿触碰的过往。沉默中，他的拳头握紧又松开。' } ],
+        text: [
+            { type: 'narration', content: '陆骁的目光复杂，他似乎有不愿触碰的过往。沉默中，他的拳头握紧又松开。' },
+            { type: 'dialogue', speaker: '陆骁', content: '"我以前在部队，见过被带走就再没回来的人。"他的喉结滚了滚，"我不想……你变成那样。"' },
+            { type: 'dialogue', speaker: '陆骁', content: '"但我不能违抗他。你明白吗？"' }
+        ],
         choices: [
             { text: '请求他帮你逃走', type: 'love', scene: 'luxiao_help_escape', effects: { characters: { luxiao: { affection: 15, trust: 15 } } }, note: '请求背叛' },
             { text: '温柔劝说他帮忙', type: 'love', scene: 'date_luxiao', effects: { characters: { luxiao: { affection: 10 } } }, note: '争取盟友' },
@@ -1191,7 +1242,11 @@ const SCENES = {
     },
 
     luxiao_train: {
-        text: [ { type: 'narration', content: '他教了你一些简易防身术，动作干净利落。你感觉自己更有信心了。' } ],
+        text: [
+            { type: 'narration', content: '他教了你一些简易防身术，动作干净利落。你感觉自己更有信心了。' },
+            { type: 'dialogue', speaker: '陆骁', content: '"手腕要这样翻。"他握住你的手，纠正你的角度，掌心粗糙而温热，"真到那天，别犹豫。往喉咙，往眼，往膝。"' },
+            { type: 'dialogue', speaker: '陆骁', content: '"……我希望你永远用不上。"' }
+        ],
         choices: [
             { text: '继续练习', type: 'investigate', scene: 'luxiao_train', effects: { escapeProgress: 5, characters: { luxiao: { affection: 2, trust: 2 } } }, note: '提高技能' },
             { text: '感谢他，离开训练室', type: 'love', scene: 'living_room', effects: {}, note: '留好关系' },
@@ -1200,7 +1255,10 @@ const SCENES = {
     },
 
     luxiao_sad: {
-        text: [ { type: 'narration', content: '他看着你离开，表情淡淡的失落。' } ],
+        text: [
+            { type: 'narration', content: '他看着你离开，表情淡淡的失落。' },
+            { type: 'dialogue', speaker: '陆骁', content: '"……走吧。"他背过身去，声音像砂纸磨过，"但该跑的时候，别回头。"' }
+        ],
         choices: [
             { text: '回头安慰他', type: 'love', scene: 'question_luxiao', effects: {}, note: '修复关系' },
             { text: '不理会，继续计划', type: 'escape', scene: 'explore_hallway', effects: {}, note: '坚持计划' }
@@ -1208,7 +1266,10 @@ const SCENES = {
     },
 
     baiche_plea: {
-        text: [ { type: 'narration', content: '白澈听了你的请求，眼神温柔，似乎在衡量风险与良知。' } ],
+        text: [
+            { type: 'narration', content: '白澈听了你的请求，眼神温柔，似乎在衡量风险与良知。' },
+            { type: 'dialogue', speaker: '白澈', content: '"报警……"他重复了一遍，指节捏得发白，"会毁了很多人。但比起毁了你，我宁愿毁了自己。"' }
+        ],
         choices: [
             { text: '恳求他报警', type: 'investigate', scene: 'baiche_call_police', effects: {}, note: '寻求帮助' },
             { text: '表示理解与感激', type: 'love', scene: 'date_baiche', effects: {}, note: '增加信任' }
@@ -1216,7 +1277,11 @@ const SCENES = {
     },
 
     baiche_drug: {
-        text: [ { type: 'narration', content: '你询问药物成分，他耐心解释了常用药物的作用。你注意到他提到镇静剂时目光闪烁了一下。' } ],
+        text: [
+            { type: 'narration', content: '你询问药物成分，他耐心解释了常用药物的作用。你注意到他提到镇静剂时目光闪烁了一下。' },
+            { type: 'dialogue', speaker: '白澈', content: '"镇静剂是沈先生让备的。"他不敢看你的眼睛，"但我从没用过。每一次，我都偷偷换成了维生素。"' },
+            { type: 'dialogue', speaker: '白澈', content: '"这大概……是我仅剩的良心了。"' }
+        ],
         choices: [
             { text: '追问镇静剂的用途', type: 'investigate', scene: 'baiche_drug', effects: { escapeProgress: 3, characters: { baiche: { affection: 2, trust: 2 } } }, note: '缓慢获取信息' },
             { text: '感谢他并离开', type: 'love', scene: 'living_room', effects: {}, note: '保持低调' },
@@ -1225,7 +1290,10 @@ const SCENES = {
     },
 
     baiche_distance: {
-        text: [ { type: 'narration', content: '你选择保持沉默，白澈看起来有些受伤，但还是尊重你的决定。' } ],
+        text: [
+            { type: 'narration', content: '你选择保持沉默，白澈看起来有些受伤，但还是尊重你的决定。' },
+            { type: 'dialogue', speaker: '白澈', content: '"不想说也没关系。"他退后半步，露出一个苦涩的笑，"我只是……想让你知道，你不是一个人。"' }
+        ],
         choices: [
             { text: '观察他的反应', type: 'investigate', scene: 'baiche_drug', effects: {}, note: '留意细节' },
             { text: '回到房间', type: 'escape', scene: 'back_to_room', effects: {}, note: '收缩行动' }
@@ -1255,7 +1323,8 @@ const SCENES = {
         choices: [
             { text: '下楼去客厅，看看谁在说话', type: 'investigate', scene: 'living_room', effects: { alertLevel: 5 }, note: '进入客厅' },
             { text: '先探索走廊尽头的书房', type: 'investigate', scene: 'study', effects: { escapeProgress: 5 }, note: '书房可能有机密' },
-            { text: '听见陆骁的脚步声，立刻退回房间', type: 'escape', scene: 'back_to_room', effects: { alertLevel: 0 }, note: '避免冲突' }
+            { text: '听见陆骁的脚步声，立刻退回房间', type: 'escape', scene: 'back_to_room', effects: { alertLevel: 0 }, note: '避免冲突' },
+            { text: '顺着楼梯走向地下酒窖，那里或许藏着出口', type: 'escape', scene: 'cellar', effects: { escapeProgress: 10 }, note: '探索酒窖' }
         ]
     },
     
@@ -1315,7 +1384,8 @@ const SCENES = {
         text: [
             { type: 'narration', content: '沈墨带你去了温室。里面种满了他妹妹生前最爱的白玫瑰。' },
             { type: 'dialogue', speaker: '沈墨', content: '她和你一样，总是喜欢问为什么。' },
-            { type: 'narration', content: '他的指尖掠过一朵玫瑰，动作轻得像在触碰回忆。' }
+            { type: 'narration', content: '他的指尖掠过一朵玫瑰，动作轻得像在触碰回忆。' },
+            { type: 'dialogue', speaker: '沈墨', content: '"这园子里的白玫瑰，是我亲手栽的。每年春天，我都在想，如果她还活着，该会多喜欢。"' }
         ],
         choices: [
             { text: '"我不是她。别把我当成她的替代品。"', type: 'escape', scene: 'shenmo_angry', effects: { characters: { shenmo: { affection: 5, fear: 20 } }, alertLevel: 20 }, note: '刺痛他' },
@@ -1399,6 +1469,7 @@ const SCENES = {
     luxiao_help_escape: {
         text: [
             { type: 'narration', content: '陆骁在午夜打开你的房门，手里拿着车和钥匙。"跟我走。"' },
+            { type: 'dialogue', speaker: '陆骁', content: '"车在后门。"他把钥匙塞进你手心，声音压得极低，"别问为什么。活下去，就够了。"' },
             { type: 'narration', content: '你们的车刚驶出庄园，身后就传来了枪声。他扑在你身上，温热的血溅上你的脸。' }
         ],
         choices: [
@@ -1409,6 +1480,7 @@ const SCENES = {
     baiche_call_police: {
         text: [
             { type: 'narration', content: '白澈把手机递给你，屏幕上显示着 110。"打吧。我帮你作证。"' },
+            { type: 'dialogue', speaker: '白澈', content: '"按下去。"他把手机推近你，手在抖，却没有缩回，"这是我这辈子，第一次觉得当个医生是对的。"' },
             { type: 'narration', content: '警笛声划破庄园的宁静。你被护送出去时，白澈已经戴上了手铐。' }
         ],
         choices: [
