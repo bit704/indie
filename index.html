@@ -7,146 +7,294 @@
 	<meta name="description" content="独立游戏站点">
 	<style>
 		:root{
-			--bg:#000000; --card:#0b0b0b; --accent:#ffd400; --muted:#cfcfcf; --glass:rgba(255,212,0,0.04);
-			--max-w:920px; --measure:66ch;
-			color-scheme: dark;
+			--bg:#07070a;
+			--bg-2:#0d0d12;
+			--card:#121218;
+			--card-2:#16161f;
+			--line:rgba(255,255,255,0.08);
+			--accent:#ffd400;
+			--accent-soft:rgba(255,212,0,0.12);
+			--text:#f4f4f7;
+			--muted:#a0a0ad;
+			--muted-2:#7a7a87;
+			--radius:18px;
+			--max-w:1080px;
+			--gold:#ffd400;
+			--empire:#e08a2b;
+			--rose:#ff4d6d;
+			font-synthesis:none;
 		}
 		*{box-sizing:border-box}
-		html,body{height:100%;background:#000}
+		html{scroll-behavior:smooth}
 		body{
-			margin:0; font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-			background:var(--card); color: #fff; -webkit-font-smoothing:antialiased;
-			display:flex; justify-content:center; align-items:stretch; min-height:100vh; padding:56px 20px;
-		}
-		.wrap{width:100%; max-width:var(--max-w);padding:20px;display:flex;flex-direction:column}
-		header{display:flex;align-items:center;gap:16px;margin-bottom:28px}
-		.logo{width:68px;height:68px;border-radius:10px;background:transparent;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent);font-size:20px}
-		h1{margin:0;font-size:34px;letter-spacing: -0.4px}
-		p.lead{margin:8px 0 0;color:var(--muted);max-width:var(--measure)}
-		.header-line{height:1px;background:linear-gradient(90deg,transparent,rgba(255,212,0,0.08),transparent);margin:18px 0}
-
-		.grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:start}
-		@media (max-width:880px){.grid{grid-template-columns:1fr;}}
-
-		.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));background-color:var(--card);border-radius:14px;padding:28px;box-shadow:0 10px 50px rgba(0,0,0,0.6);border:1px solid rgba(255,212,0,0.06)}
-
-		.hero h2{margin:0 0 8px;font-size:24px}
-		.hero p{margin:0;color:var(--muted);font-size:15px;line-height:1.7}
-		.hero-header{display:flex;align-items:center;justify-content:space-between;gap:16px}
-		.tags{display:flex;gap:8px}
-		.tag{background:rgba(255,212,0,0.08);color:var(--accent);padding:6px 10px;border-radius:999px;font-size:13px;font-weight:700}
-
-		.actions{display:flex;gap:12px;margin-top:20px;align-items:center}
-		.btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:10px;background:var(--accent);color:#0a0a0a;font-weight:800;text-decoration:none;box-shadow:0 6px 18px rgba(255,212,0,0.12)}
-		.btn.secondary{background:transparent;border:1px solid rgba(255,212,0,0.18);color:var(--muted);font-weight:700}
-		.btn:hover{transform:translateY(-2px)}
-		.btn.secondary:hover{background:rgba(255,212,0,0.03)}
-
-		.meta{margin-top:14px;color:var(--muted);font-size:13px;display:flex;flex-direction:column;gap:6px}
-		.meta-item{display:flex;align-items:center;gap:8px}
-		.meta-item strong{color:var(--muted);font-weight:700}
-
-		.aside .preview{height:220px;border-radius:10px;overflow:hidden;background:var(--glass);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
-		.list{margin-top:18px;display:grid;gap:12px}
-		.feature{display:flex;gap:12px;align-items:flex-start;background:rgba(255,212,0,0.02);padding:10px;border-radius:10px}
-
-
-		.dot{width:10px;height:10px;border-radius:3px;background:var(--accent);margin-top:6px}
-
-		strong{color:#fff}
-		a{color:var(--accent)}
-
-		@media (max-width:540px){
-			.actions{flex-direction:column}
-			.btn{width:100%;justify-content:center}
-			.btn.secondary{width:100%;text-align:center}
+			margin:0;
+			font-family:"Segoe UI",Inter,system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+			background:var(--bg);
+			color:var(--text);
+			-webkit-font-smoothing:antialiased;
+			line-height:1.6;
+			overflow-x:hidden;
 		}
 
-			.disclaimer{margin-top:16px;background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;color:var(--muted);font-size:14px;line-height:1.5}
+		/* ambient background */
+		.bg-fx{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+		.bg-fx::before,.bg-fx::after{
+			content:"";position:absolute;width:60vmax;height:60vmax;border-radius:50%;
+			filter:blur(120px);opacity:.35;
+		}
+		.bg-fx::before{background:radial-gradient(circle,#5a3b00,transparent 60%);top:-20vmax;left:-10vmax;animation:drift1 22s ease-in-out infinite alternate}
+		.bg-fx::after{background:radial-gradient(circle,#3a0030,transparent 60%);bottom:-20vmax;right:-10vmax;animation:drift2 26s ease-in-out infinite alternate}
+		@keyframes drift1{to{transform:translate(8vmax,6vmax) scale(1.1)}}
+		@keyframes drift2{to{transform:translate(-8vmax,-6vmax) scale(1.15)}}
+		.grid-overlay{position:fixed;inset:0;z-index:-1;pointer-events:none;
+			background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),
+			                 linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+			background-size:46px 46px;
+			mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%);
+			-webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%);
+		}
 
-		footer{margin-top:32px;color:var(--muted);font-size:13px;text-align:center}
+		/* nav */
+		nav{position:sticky;top:0;z-index:50;
+			display:flex;align-items:center;justify-content:space-between;gap:18px;
+			padding:14px clamp(16px,4vw,40px);
+			background:rgba(7,7,10,0.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+			border-bottom:1px solid var(--line);
+			transition:box-shadow .3s ease,background .3s ease;
+		}
+		nav.scrolled{box-shadow:0 8px 40px rgba(0,0,0,.5);background:rgba(7,7,10,0.82)}
+		.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
+		.brand .logo{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+			font-weight:900;font-size:16px;letter-spacing:.5px;color:#0a0a0a;
+			background:linear-gradient(135deg,var(--gold),#ffb300);
+			box-shadow:0 6px 18px rgba(255,212,0,.25);
+		}
+		.brand .word{font-weight:800;font-size:18px;letter-spacing:.3px}
+		.brand .word b{color:var(--gold)}
+		.nav-links{display:flex;align-items:center;gap:6px}
+		.nav-links a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;
+			padding:8px 12px;border-radius:9px;transition:color .2s,background .2s}
+		.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+		.nav-cta{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;
+			background:var(--accent-soft);color:var(--gold);font-weight:700;font-size:13.5px;text-decoration:none;
+			border:1px solid rgba(255,212,0,.25);transition:transform .2s,background .2s}
+		.nav-cta:hover{transform:translateY(-1px);background:rgba(255,212,0,.18)}
+		@media (max-width:760px){.nav-links{display:none}}
 
-		a.btn:focus{outline:3px solid rgba(255,212,0,0.18)}
+		.wrap{max-width:var(--max-w);margin:0 auto;padding:0 clamp(16px,4vw,40px)}
 
-		.disclaimer{margin-top:18px;background:transparent;border-left:3px solid rgba(255,212,0,0.18);padding:14px 16px;color:var(--muted);font-size:14px;line-height:1.5;border-radius:6px}
+		/* hero */
+		.hero{position:relative;text-align:center;padding:clamp(56px,10vw,110px) 0 clamp(40px,7vw,72px)}
+		.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;letter-spacing:3px;
+			text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:22px;
+			padding:7px 14px;border:1px solid rgba(255,212,0,.22);border-radius:999px;background:rgba(255,212,0,.05)}
+		.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+		.hero h1{margin:0;font-size:clamp(34px,6vw,62px);line-height:1.08;font-weight:900;letter-spacing:-.5px}
+		.hero h1 .sep{color:var(--gold)}
+		.hero .lead{margin:20px auto 0;max-width:54ch;color:var(--muted);font-size:clamp(15px,2.2vw,18px)}
+		.hero .stats{display:flex;justify-content:center;gap:clamp(20px,5vw,56px);margin-top:38px;flex-wrap:wrap}
+		.hero .stat{text-align:center}
+		.hero .stat .n{font-size:26px;font-weight:900;color:var(--text)}
+		.hero .stat .l{font-size:12.5px;color:var(--muted-2);letter-spacing:1px;margin-top:2px}
 
-		footer{margin-top:auto;color:var(--muted);font-size:13px;text-align:center}
-		footer .muted{color:rgba(255,255,255,0.55)}
+		.section-head{display:flex;align-items:center;gap:16px;margin:clamp(24px,5vw,48px) 0 22px}
+		.section-head .bar{height:1px;flex:1;background:linear-gradient(90deg,rgba(255,212,0,.4),transparent)}
+		.section-head .t{font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted-2);font-weight:700}
+
+		/* game cards */
+		.games{display:flex;flex-direction:column;gap:26px;padding-bottom:50px}
+		.game{display:grid;grid-template-columns:minmax(220px,38%) 1fr;gap:0;
+			background:linear-gradient(180deg,var(--card),var(--card-2));
+			border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+			box-shadow:0 24px 60px rgba(0,0,0,.45);
+			opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease,border-color .3s ease;
+		}
+		.game.in{opacity:1;transform:none}
+		.game:hover{border-color:rgba(255,212,0,.22)}
+
+		.cover{position:relative;min-height:280px;display:flex;align-items:flex-end;padding:22px;
+			overflow:hidden;color:#fff}
+		.cover.empire{background:linear-gradient(160deg,#2a1206,#7a2d0c 55%,#e08a2b)}
+		.cover.rose{background:linear-gradient(160deg,#1a0a1f,#4a1140 50%,#b3224f)}
+		.cover::after{content:"";position:absolute;inset:0;
+			background:radial-gradient(120% 80% at 80% 0%,rgba(255,255,255,.18),transparent 55%)}
+		.cover .art{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
+		.cover .cover-title{position:relative;z-index:2;font-size:22px;font-weight:900;letter-spacing:.5px;
+			text-shadow:0 4px 20px rgba(0,0,0,.6)}
+		.cover .cover-tag{position:relative;z-index:2;font-size:12px;font-weight:700;opacity:.85;margin-top:2px}
+
+		.info{padding:clamp(22px,3vw,30px);display:flex;flex-direction:column}
+		.info-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+		.info h2{margin:0;font-size:clamp(22px,3vw,27px);font-weight:900;letter-spacing:.2px}
+		.tags{display:flex;gap:8px;flex-wrap:wrap}
+		.tag{background:var(--accent-soft);color:var(--gold);padding:5px 12px;border-radius:999px;
+			font-size:12.5px;font-weight:700;border:1px solid rgba(255,212,0,.18)}
+		.info p.desc{margin:14px 0 0;color:var(--muted);font-size:15px;line-height:1.75}
+
+		.actions{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;align-items:center}
+		.btn{display:inline-flex;align-items:center;gap:9px;padding:12px 20px;border-radius:11px;
+			background:linear-gradient(135deg,var(--gold),#ffbe1a);color:#0a0a0a;font-weight:800;font-size:14.5px;
+			text-decoration:none;box-shadow:0 10px 26px rgba(255,212,0,.22);transition:transform .18s,box-shadow .18s}
+		.btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(255,212,0,.32)}
+		.btn.secondary{background:transparent;border:1px solid rgba(255,212,0,.28);color:var(--gold);
+			box-shadow:none;font-weight:700}
+		.btn.secondary:hover{background:rgba(255,212,0,.07);box-shadow:none}
+		.btn svg{width:16px;height:16px}
+
+		.meta{margin-top:18px;display:grid;gap:8px;padding-top:16px;border-top:1px solid var(--line)}
+		.meta-item{display:flex;align-items:baseline;gap:10px;font-size:13.5px;color:var(--muted)}
+		.meta-item strong{color:var(--text);font-weight:700;min-width:48px}
+		.meta-item a{color:var(--gold);text-decoration:none}
+		.meta-item a:hover{text-decoration:underline}
+
+		.disclaimer{margin-top:16px;background:rgba(255,255,255,.025);border-left:3px solid rgba(255,212,0,.35);
+			padding:12px 14px;border-radius:8px;color:var(--muted-2);font-size:13px;line-height:1.6}
+
+		@media (max-width:720px){
+			.game{grid-template-columns:1fr}
+			.cover{min-height:180px}
+		}
+
+		footer{margin-top:20px;border-top:1px solid var(--line);padding:34px 0 48px;text-align:center;color:var(--muted)}
+		footer .big{font-size:16px;font-weight:700;color:var(--text)}
+		footer .copy{margin-top:8px;font-size:13px;color:var(--muted-2);letter-spacing:.5px}
 	</style>
 </head>
 <body>
-	<div class="wrap">
-		<header>
-			<div class="logo">IE</div>
-			<div>
-				<h1>Indie — 独立游戏合集</h1>
-				<p class="lead">精选小型独立游戏与创作展示。</p>
-			</div>
-		</header>
+	<div class="bg-fx"></div>
+	<div class="grid-overlay"></div>
 
-		<div class="header-line"></div>
-
-		<div style="max-width:var(--max-w);margin:0 auto 18px;display:flex;justify-content:flex-end">
-			<a class="btn secondary" href="intro.html">获取 DeepSeek API Key</a>
+	<nav id="nav">
+		<a class="brand" href="#top">
+			<span class="logo">IE</span>
+			<span class="word">Indie<b>.</b></span>
+		</a>
+		<div class="nav-links">
+			<a href="#game-empire">中华帝国推演</a>
+			<a href="#game-otome">囚笼与玫瑰</a>
 		</div>
+		<a class="nav-cta" href="intro.html">
+			<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+			获取 DeepSeek API Key
+		</a>
+	</nav>
 
-		<main class="grid">
-			<section class="card hero">
-				<div class="hero-header">
-					<h2>中华帝国推演 V1.0</h2>
-					<div class="tags"><span class="tag">策略</span><span class="tag">模拟</span></div>
+	<a id="top"></a>
+	<div class="wrap">
+		<section class="hero">
+			<h1>Indie <span class="sep">—</span> 独立游戏合集</h1>
+			<p class="lead">精选小型独立游戏与创作展示。</p>
+		</section>
+
+		<main class="games">
+			<!-- 中华帝国推演 -->
+			<section class="game" id="game-empire">
+				<div class="cover empire">
+					<svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+						<path d="M0 230 L70 150 L130 200 L200 110 L270 190 L330 140 L400 220 L400 300 L0 300 Z" fill="rgba(0,0,0,0.35)"/>
+						<path d="M0 260 L90 200 L160 245 L240 180 L310 240 L400 200 L400 300 L0 300 Z" fill="rgba(0,0,0,0.45)"/>
+						<circle cx="305" cy="80" r="34" fill="rgba(255,212,0,0.55)"/>
+					</svg>
+					<div>
+						<div class="cover-title">中华帝国推演</div>
+						<div class="cover-tag">策略 · 模拟</div>
+					</div>
 				</div>
-				<p>一款基于浏览器的策略/模拟小游戏，探索扩张与治理帝国的抉择。游戏在新的页面打开，支持桌面与移动浏览器。</p>
+				<div class="info">
+					<div class="info-top">
+						<h2>中华帝国推演 V1.0</h2>
+						<div class="tags"><span class="tag">策略</span><span class="tag">模拟</span></div>
+					</div>
+					<p class="desc">一款基于浏览器的策略/模拟小游戏，探索扩张与治理帝国的抉择。游戏在新的页面打开，支持桌面与移动浏览器。</p>
 
-				<div class="actions">
-					<a class="btn" href="game/china-empire-game.html" target="_blank" rel="noopener noreferrer">立即开始</a>
-					<a class="btn secondary" href="game/china-empire-game.html">在当前页打开</a>
-				</div>
+					<div class="actions">
+						<a class="btn" href="game/china-empire-game.html" target="_blank" rel="noopener noreferrer">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+							立即开始
+						</a>
+						<a class="btn secondary" href="game/china-empire-game.html">在当前页打开</a>
+					</div>
 
-				<div class="meta">
-					<div class="meta-item"><strong>进度：</strong><span>早期体验版</span></div>
-					<div class="meta-item"><strong>作者：</strong><span>目渺渺兮</span></div>
-					<div class="meta-item"><strong>联系：</strong><a href="mailto:2302945833@qq.com" style="color:var(--accent);text-decoration:none">2302945833@qq.com</a></div>
-				<div class="meta-item"><strong>玩法：</strong><span>资源管理、领土扩张、事件决策</span></div>
-			</div>
+					<div class="meta">
+						<div class="meta-item"><strong>进度：</strong><span>早期体验版</span></div>
+						<div class="meta-item"><strong>作者：</strong><span>目渺渺兮</span></div>
+						<div class="meta-item"><strong>联系：</strong><a href="mailto:2302945833@qq.com">2302945833@qq.com</a></div>
+						<div class="meta-item"><strong>玩法：</strong><span>资源管理、领土扩张、事件决策</span></div>
+					</div>
 
-				<div class="disclaimer">
-					<strong>免责声明：</strong> 本游戏仅供娱乐，不代表真实历史事件与人物评价。作者尊重历史与文化根源，坚决反对历史虚无主义。如有雷同，纯属巧合。恳请受众以开放心态游玩，切勿将其与现实历史、宗教传统直接对应。如有侵权或需删除内容，请联系作者。
+					<div class="disclaimer">
+						<strong>免责声明：</strong> 本游戏仅供娱乐，不代表真实历史事件与人物评价。作者尊重历史与文化根源，坚决反对历史虚无主义。如有雷同，纯属巧合。恳请受众以开放心态游玩，切勿将其与现实历史、宗教传统直接对应。如有侵权或需删除内容，请联系作者。
+					</div>
 				</div>
 			</section>
 
-
-		</main>
-
-		<main class="grid">
-			<section class="card hero">
-				<div class="hero-header">
-					<h2>囚笼与玫瑰</h2>
-					<div class="tags"><span class="tag">乙女</span><span class="tag">剧情</span></div>
+			<!-- 囚笼与玫瑰 -->
+			<section class="game" id="game-otome">
+				<div class="cover rose">
+					<svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+						<g stroke="rgba(0,0,0,0.4)" stroke-width="10">
+							<line x1="60" y1="0" x2="60" y2="300"/><line x1="140" y1="0" x2="140" y2="300"/>
+							<line x1="220" y1="0" x2="220" y2="300"/><line x1="300" y1="0" x2="300" y2="300"/>
+							<line x1="370" y1="0" x2="370" y2="300"/>
+						</g>
+						<path d="M200 250 C150 210 160 150 200 140 C240 150 250 210 200 250 Z" fill="rgba(255,77,109,0.65)"/>
+						<path d="M200 250 C185 215 190 175 200 162 C210 175 215 215 200 250 Z" fill="rgba(0,0,0,0.25)"/>
+					</svg>
+					<div>
+						<div class="cover-title">囚笼与玫瑰</div>
+						<div class="cover-tag">乙女 · 剧情</div>
+					</div>
 				</div>
-				<p>一款乙女向互动剧情小游戏，在神秘别墅中探索线索、进行选项式对话，体验多结局剧情。</p>
+				<div class="info">
+					<div class="info-top">
+						<h2>囚笼与玫瑰</h2>
+						<div class="tags"><span class="tag">乙女</span><span class="tag">剧情</span></div>
+					</div>
+					<p class="desc">一款乙女向互动剧情小游戏，在神秘别墅中探索线索、进行选项式对话，体验多结局剧情。</p>
 
-				<div class="actions">
-					<a class="btn" href="game/otome-kidnap-villa.html" target="_blank" rel="noopener noreferrer">立即开始</a>
-					<a class="btn secondary" href="game/otome-kidnap-villa.html">在当前页打开</a>
-				</div>
+					<div class="actions">
+						<a class="btn" href="game/otome-kidnap-villa.html" target="_blank" rel="noopener noreferrer">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+							立即开始
+						</a>
+						<a class="btn secondary" href="game/otome-kidnap-villa.html">在当前页打开</a>
+					</div>
 
-				<div class="meta">
-					<div class="meta-item"><strong>进度：</strong><span>试玩版</span></div>
-					<div class="meta-item"><strong>作者：</strong><span>未知</span></div>
-					<div class="meta-item"><strong>玩法：</strong><span>对话选择、剧情分支、多结局</span></div>
-				</div>
+					<div class="meta">
+						<div class="meta-item"><strong>进度：</strong><span>试玩版</span></div>
+						<div class="meta-item"><strong>作者：</strong><span>未知</span></div>
+						<div class="meta-item"><strong>玩法：</strong><span>对话选择、剧情分支、多结局</span></div>
+					</div>
 
-				<div class="disclaimer">
-					<strong>免责声明：</strong> 可能包含色情或暴力情节，未成年人禁止游玩。如有不适请停止游玩。
+					<div class="disclaimer">
+						<strong>免责声明：</strong> 可能包含色情或暴力情节，未成年人禁止游玩。如有不适请停止游玩。
+					</div>
 				</div>
 			</section>
 		</main>
 
 		<footer>
-			<div>玩得开心！</div>
-			<div style="margin-top:6px">© 2026 Indie Games</div>
+			<div class="big">玩得开心！</div>
+			<div class="copy">© 2026 Indie Games</div>
 		</footer>
 	</div>
+
+	<script>
+		// nav shadow on scroll
+		var nav=document.getElementById('nav');
+		var onScroll=function(){nav.classList.toggle('scrolled',window.scrollY>8);};
+		window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+		// reveal game cards on scroll
+		var cards=document.querySelectorAll('.game');
+		if('IntersectionObserver' in window){
+			var io=new IntersectionObserver(function(entries){
+				entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+			},{threshold:0.15});
+			cards.forEach(function(c){io.observe(c);});
+		}else{
+			cards.forEach(function(c){c.classList.add('in');});
+		}
+	</script>
 </body>
 </html>
