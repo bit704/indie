@@ -1,6 +1,6 @@
 /**
  * 悬浮主页按钮 — 公用组件
- * 用法：在任意页面 <body> 末尾引入 <script src="float-home-btn.js"></script>
+ * 用法：在任意页面 <body> 末尾引入 <script src="../components/float-home-btn.js"></script>
  * 可选：window.FLOAT_HOME_URL = '/custom/path' 覆盖默认跳转地址
  */
 (function () {
