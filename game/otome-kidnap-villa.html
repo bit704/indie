@@ -1616,6 +1616,13 @@ function renderStoryLog() {
 function renderChoices() {
     const grid = document.getElementById('choices-grid');
     if (!grid) return;
+    if (!currentChoices || currentChoices.length === 0) {
+        // 无选项时：AI 模式给出"输入行动继续"提示；本地模式保持空白
+        grid.innerHTML = gameData.aiMode
+            ? '<div class="hint-text" style="text-align:center;padding:14px 0;">🤖 剧情由 AI 驱动——在上方输入框写下你的行动，继续故事。</div>'
+            : '';
+        return;
+    }
     grid.innerHTML = currentChoices.map((c, i) => `
         <button class="choice-btn ${c.type}" onclick="choose(${i})">
             <span class="choice-tag tag-${c.type}">${typeLabel(c.type)}</span>
@@ -1986,6 +1993,8 @@ function choose(index) {
         updateClues();
         if (checkEndings()) { renderAll(); return; }
         saveGame();
+        // AI 生成的选项（scene 为 null）选完后清空，提示玩家输入新行动以推进剧情
+        if (choice.ai) currentChoices = [];
     }
     renderAll();
 }
@@ -2149,7 +2158,8 @@ async function runAIStory(action) {
             currentChoices = result.choices.map(c => ({
                 text: c.text,
                 type: c.type || 'investigate',
-                scene: c.scene || null,
+                // 防御：AI 可能返回不存在的场景 id，合法性校验失败则置 null，避免选该选项后剧情卡死
+                scene: (c.scene && (SCENES[c.scene] || ENDING_SCENE_MAP[c.scene])) ? c.scene : null,
                 effects: c.effects || {},
                 note: c.note || 'AI生成',
                 advanceTime: c.advanceTime || 1,
@@ -2194,7 +2204,7 @@ function buildSystemPrompt() {
 1. 文风：哥特浪漫、悬疑、带点病态美感。中文叙述，第二人称或第三人称（以女主视角）。
 2. 保持角色性格一致性。
 3. 情节可以包含情感张力、暗示、轻微暧昧，但禁止色情或过度暴力。
-4. 返回严格 JSON，包含：narrative（剧情段落，200-400字）、dialogue（可选，对话数组）、location（可选，新地点）、hourAdvance（时间推进小时数）、effects（对角色好感/恐惧/信任、escapeProgress、alertLevel的影响，参考 applyEffects 格式）、choices（3个选项，每个含 text/type/.effects/note）。
+4. 返回严格 JSON，包含：narrative（剧情段落，200-400字）、dialogue（可选，对话数组）、location（可选，新地点）、hourAdvance（时间推进小时数）、effects（对角色好感/恐惧/信任、escapeProgress、alertLevel的影响，参考 applyEffects 格式）、choices（3个选项，每个含 text/type/.effects/note）。choices 中的 scene 字段必须留空（null），不要填写任何场景 id——剧情推进由本地引擎处理，结局通过 effects.flags 触发。
 5. 如果用户行动会导致某个结局，在 effects 中设置对应 flags，如 surrendered_to_shenmo、left_with_yechen、luxiao_helped_escape、baiche_called_police、submitted_evidence、in_tunnel。`;
 }
 
